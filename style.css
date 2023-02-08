@@ -1,0 +1,13 @@
+#canvas {
+    margin: auto;
+    display: block;
+}
+#square{
+    margin :auto;
+    position: relative;
+    width : auto;
+}
+#button-container{
+    display : flex;
+
+}
