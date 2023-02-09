@@ -65,28 +65,50 @@ gl.useProgram(program);
 
 function main(){  
   //sample data
-  const triangle = [
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 1, 0.0, 0.0, 0.0,
-    1, 0.0, 0.0, 0.0, 0.0,
-  ];
+  // let triangle = [
+  //   0.0, 0.0, 0.0, 0.0, 0.0,
+  //   0.0, 1, 0.0, 0.0, 0.0,
+  //   1, 0.0, 0.0, 0.0, 0.0,
+  // ];
 
-  var positions = [
-    0.1, 0.2,
-    0.8, 0.2,
-    0.1, 0.3,
-    0.1, 0.3,
-    0.8, 0.2,
-    0.8, 0.3,
-  ];
+//   var positions = [
+//     -0.7 ,-0.1 ,1,0,0,
+//     -0.3 ,0.6  ,0,0,0,
+//     -0.3 ,-0.3 ,0,0,0,
+//     0.2  ,0.6  ,0,0,0,
+//     0.3  ,-0.3 ,0,0,0,
+//     0.7  ,0.6  ,0,0,0, 
+//  ]
+
+  
+//   let c1 = new Color(255,0,0)
+//   let p1 = new Point()
+//   let p2 = new Point(0,1)
+//   let p3 = new Point(1,0,c1)
+//   console.log(p1.toVertice())
+//   console.log(p2.toVertice())
+//   console.log(p3.toVertice())
+//   const triangle = [
+//     ...p1.toVertice(),
+//     ...p2.toVertice(),
+//     ...p3.toVertice()
+//   ]
+//   let points = [p1,p2,p3];
+//   let vertices = [];
+//   for (let point of points){
+//       vertices.push(
+//           ...point.toVertice()
+//       )
+//   }
+//   console.log(vertices);
+
 
   gl.clearColor(1,1,1,1);
-  // gl.colorMask(true, false, true ,false);
   gl.clear(gl.COLOR_BUFFER_BIT);
-  // console.log(gl.isShader(vertexShader));
-  // console.log(gl.isProgram(program));
-  // alert(gl.POINTS);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW); //pas mau gambar
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  
+  let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
+  sq.draw()
+  let rt = new Rectangle(gl, [new Point(0.0,0.0,new Color(255,0,0)), new Point(0.5,0.7,new Color(0,255,0))])
+  rt.draw()
 
 }
