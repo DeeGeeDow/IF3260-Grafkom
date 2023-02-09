@@ -1,3 +1,8 @@
+/**
+ * 
+ * @param {HTMLCanvasElement} canvas 
+ * @returns {RenderingContext | null}
+ */
 function check(canvas){
   let gl = ['experimental-webgl','webgl','moz-webgl'];
   let flag;
@@ -15,19 +20,7 @@ function check(canvas){
   }
   return flag;
 }
-let vertexShaderText = 
-    `
-    void main() {
-      gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
-      gl_PointSize = 10.0;
-  }
-`;
-let fragmentShaderText = 
-    `
-    void main() {
-      gl_FragColor = vec4(0.5019607843137255, 0.0, 0.0, 1.0);
-  }
-`;
+
 function createShader(gl,type, source) {
   let shader = gl.createShader(type)
   gl.shaderSource(shader, source)
@@ -39,6 +32,7 @@ function createShader(gl,type, source) {
   }
   return shader;
 }
+
 function createProgram(gl,vertexShader, fragmentShader) {
   let program = gl.createProgram();
   gl.attachShader(program, vertexShader);
