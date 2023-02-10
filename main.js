@@ -110,5 +110,6 @@ function main(){
   sq.draw()
   let rt = new Rectangle(gl, [new Point(0.0,0.0,new Color(255,0,0)), new Point(0.5,0.7,new Color(0,255,0))])
   rt.draw()
-
+  let ln = new Line(gl, [new Point(-0.7, 0.7, new Color(255,255,0)), new Point(0.7,-0.7, new Color(255,255,0))])
+  ln.draw()
 }
