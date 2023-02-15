@@ -1,3 +1,6 @@
+/**
+ * State menyimpan shape-shape yang dibuat. Kelas ini juga menyimpan shape yang sedang dipilih
+ */
 class State {
     /**
      * 
@@ -34,11 +37,17 @@ class State {
         this.shapes.push(shape);
     }
 
+    /**
+     * Menggambar shapes dan juga menulis ulang list shape
+     */
     draw(){
         this.drawCanvas()
         this.updateShapeList()
     }
     
+    /**
+     * Mengupdate list shape
+     */
     updateShapeList(){
         const shapeList = document.getElementById("shapeList");
         this._emptyOl(shapeList)
@@ -73,6 +82,10 @@ class State {
         // shapeList.appendChild(newLI);
     }
 
+    /**
+     * Mengosongkan list shape
+     * @param {HTMLElement} ol 
+     */
     _emptyOl(ol){
         let lis = ol.getElementsByTagName("li")
         while(lis.length > 0) {
