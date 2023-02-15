@@ -116,5 +116,20 @@ class Shape {
         }
         this.points = newPoints;
     }
-    
+
+    /**
+     * 
+     * @returns {Point}
+     * 
+     */
+    getCentroid(){
+        let n = this.points.length;
+        centroid = new Point(0,0);
+        for(p of this.points){
+            centroid.add(p.x,p.y);
+        }
+        centroid.x /= n;
+        centroid.y /= n;
+        return centroid;
+    }
 }

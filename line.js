@@ -26,12 +26,6 @@ class Line extends Shape {
      * @param {number} new_l
      */ 
     setLength(new_l){
-        let l = this.getLength();
-        let x0 = this.points[0].x;
-        let x1 = this.points[1].x;
-        let y0 = this.points[0].y;
-        let y1 = this.points[1].y;
-        this.points[1].x = x0 + (new_l)/l*(x1-x0);
-        this.points[1].y = y0 + (new_l)/l*(y1-y0);
+        this.dilate(this.points[0], new_l/this.getLength());
     }
 }
