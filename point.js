@@ -21,6 +21,16 @@ class Point {
         this.x = point.x;
         this.y = point.y;
     }
+    
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     */
+    add(x=0,y=0){
+        this.x += x;
+        this.y += y;
+    }
 
     /**
      * Return [x,y,r,g,b]

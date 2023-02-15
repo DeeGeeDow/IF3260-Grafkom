@@ -1,4 +1,6 @@
 class Shape {
+    static id = 1
+
     /**
      * Constructor
      * @param {RenderingContext} gl 
@@ -10,7 +12,8 @@ class Shape {
         this.gl = gl;
         this.points = points;
         this.GL_SHAPE = GL_SHAPE;
-        this.name = name
+        this.name = name + " " + Shape.id.toString()
+        Shape.id++
     }
 
     /**
@@ -38,6 +41,20 @@ class Shape {
             )
         }
         return vertices
+    }
+    
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     */
+    translate(x=0.0,y=0.0){
+        let newPoints = []
+        for (let point of this.points){
+            point.add(x,y)
+            newPoints.push(point);
+        }
+        this.points = newPoints;
     }
 
     

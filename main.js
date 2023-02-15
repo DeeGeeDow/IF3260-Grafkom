@@ -19,6 +19,12 @@ const fragmentShaderText = `precision mediump float;
   }`;
 
 /*------------------- INITIALIZE WEBGL -------------------------*/
+const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+canvas.width = Math.round(95 / 100 * vh)
+canvas.height = Math.round(95 / 100 * vh)
+
 
 // Setup Viewport
 gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
@@ -62,8 +68,9 @@ gl.enableVertexAttribArray(colorAttLoc);
 
 gl.useProgram(program);
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-function main(){  
+async function main(){  
   //sample data
   // let triangle = [
   //   0.0, 0.0, 0.0, 0.0, 0.0,
@@ -103,12 +110,44 @@ function main(){
 //   console.log(vertices);
 
 
-  gl.clearColor(1,1,1,1);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-  
-  let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
-  sq.draw()
-  let rt = new Rectangle(gl, [new Point(0.0,0.0,new Color(255,0,0)), new Point(0.5,0.7,new Color(0,255,0))])
-  rt.draw()
 
+let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
+  // console.log(sq.points)
+  // // sq.draw()
+  
+  
+  
+  // for (let i = 0; i < 5 ; i++){
+  //   sq.translate(0.1,0.1);
+  //   gl.clearColor(1,1,1,1);
+  //   gl.clear(gl.COLOR_BUFFER_BIT);
+  //   sq.draw()
+  //   await sleep(1000)
+  // }
+
+  let rt = new Rectangle(gl, [new Point(0.0,0.0,new Color(255,0,0)), new Point(0.5,0.7,new Color(0,255,0))])
+  // rt.draw()
+
+  let state = new State(gl);
+  
+  let pg = new Polygon(gl,[new Point(0.8,-0.2, new Color(0,0,255))])
+  pg.newPoint(new Point(-0.8,-0.8, new Color(0,255,0)))
+  pg.newPoint(new Point(-0.2,-0.8,new Color(255,0,0)))
+  pg.newPoint(new Point(0.2,-0.2, new Color(0,255,255)))
+
+  
+  state.pushShape(pg)
+  state.draw()
+
+  state.pushShape(rt)
+  state.draw()
+
+  state.pushShape(sq)
+  state.draw()
+
+
+  
+
+  console.log(pg)
+  
 }

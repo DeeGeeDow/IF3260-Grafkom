@@ -1,6 +1,17 @@
 #canvas {
     margin: 0.1em 0 0.1em 0.1em;
+    width: 95vh;
+    height: 95vh;
     display: block;
+}
+
+#canvas:hover{
+    cursor: not-allowed;
+}
+
+.leftPane{
+    width: 15em;
+    margin: 1em;
 }
 #square{
     margin :auto;
