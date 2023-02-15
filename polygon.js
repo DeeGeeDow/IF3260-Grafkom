@@ -18,6 +18,5 @@ class Polygon extends Shape {
      */
     newPoint(point = new Point()){
         this.points.push(point)
-        console.log(this.points)
     }
 }

@@ -10,7 +10,9 @@ class State {
         /**@type {Shape[]} */
         this.shapes = []
         /** @type {Shape} */
-        this.current = null
+        this.selectedShape = null
+        /** @type {Point} */
+        this.selectedPoint = null
 
         this.gl = gl;
 
@@ -25,8 +27,14 @@ class State {
         gl.clearColor(1,1,1,1);
         gl.clear(gl.COLOR_BUFFER_BIT);
         for (let shape of this.shapes){
+            if (this.selectedShape !== null && this.selectedShape.name === shape.name){
+                continue
+            }
             shape.draw()
-            shape.drawPointsMarker()
+        }
+        if (this.selectedShape !== null){
+            this.selectedShape.draw()
+            this.selectedShape.drawPointsMarker(this.selectedPoint)
         }
     }
 
@@ -55,16 +63,20 @@ class State {
         for (let shape of this.shapes){
             const shapeButton = document.createElement("button")
             shapeButton.innerHTML = shape.name
-            
+
+            shapeButton.addEventListener("click", this.selectShape.bind(this, shape.name),false)
+
             const newLi = document.createElement("li")
             newLi.appendChild(shapeButton)
 
             const pointsOl = document.createElement("ol")
             let i = 1
             for (let point of shape.points ){
-                let pointButton = document.createElement("button")
-                pointButton.innerHTML = "point "+ i.toString();
-                let pointLi = document.createElement("li")
+                const pointButton = document.createElement("button")
+                pointButton.innerHTML = point.name
+                pointButton.addEventListener("click", this.selectPoint.bind(this, shape.name, point.name), false)
+
+                const pointLi = document.createElement("li")
                 pointLi.appendChild(pointButton)
                 pointsOl.appendChild(pointLi)
                 i = i + 1;
@@ -74,13 +86,6 @@ class State {
 
             shapeList.appendChild(newLi)
         }
-        // console.log(shapeList)
-        
-        // let newLI = document.createElement("li");
-
-        // let newText = document.createTextNode("wawaw");
-        // newLI.appendChild(newText);
-        // shapeList.appendChild(newLI);
     }
 
     /**
@@ -93,5 +98,66 @@ class State {
             ol.removeChild(lis[0]);
             lis = ol.getElementsByTagName("li")
         }
+    }
+    
+
+    /**
+     * 
+     * @param {String} name 
+     * @param {MouseEvent} ev
+     */
+    selectShape(name, ev){
+        this.selectedPoint = null;
+        this.getSelectedShape(name,ev);
+    }
+
+    /**
+     * 
+     * @param {String} shapeName 
+     * @param {String} pointName 
+     * @param {MouseEvent} ev 
+     */
+    selectPoint(shapeName, pointName, ev){
+        if (this.selectedShape === null || this.selectedShape.name !== shapeName){
+            this.getSelectedShape(shapeName,ev)
+        }
+        this.getSelectedPoint(pointName, ev)
+    }
+
+    /**
+     * 
+     * @param {String} pointName 
+     * @param {MouseEvent} ev
+     */
+    getSelectedPoint(pointName, ev){
+        let selectedPoint = null;
+        for (let i = this.selectedShape.points.length - 1; i > -1; i -= 1) {
+            if (this.selectedShape.points[i].name === pointName) {
+              selectedPoint = this.selectedShape.points[i];
+              break;
+            }
+          }
+
+        this.selectedPoint = selectedPoint;
+        this.draw()
+    }
+
+    
+
+    /**
+     * 
+     * @param {String} name 
+     * @param {MouseEvent} ev
+     */
+    getSelectedShape(name, ev){
+        let selectedShape = null;
+        for (let i = this.shapes.length - 1; i > -1; i -= 1) {
+            if (this.shapes[i].name === name) {
+              selectedShape = this.shapes[i];
+              break;
+            }
+          }
+        this.selectedShape = selectedShape;
+        this.draw()
     }
 }

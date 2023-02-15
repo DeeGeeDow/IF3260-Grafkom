@@ -48,7 +48,6 @@ function createProgram(gl,vertexShader, fragmentShader) {
   gl.validateProgram(program)
   if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
       console.error('error validating program!', gl.getProgramInfoLog(program))
-      //console.log(gl.getProgramInfoLog(program))
       gl.deleteProgram(program);
       gl.deleteShader(fragmentShader);
       gl.deleteShader(vertexShader);      

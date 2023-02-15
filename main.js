@@ -111,7 +111,7 @@ async function main(){
 
 
 
-let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
+  let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
   // console.log(sq.points)
   // // sq.draw()
   
@@ -122,7 +122,7 @@ let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
   //   gl.clearColor(1,1,1,1);
   //   gl.clear(gl.COLOR_BUFFER_BIT);
   //   sq.draw()
-  //   await sleep(1000)
+  //   await sleep(500)
   // }
 
   let rt = new Rectangle(gl, [new Point(0.0,0.0,new Color(255,0,0)), new Point(0.5,0.7,new Color(0,255,0))])
@@ -135,19 +135,20 @@ let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
   pg.newPoint(new Point(-0.2,-0.8,new Color(255,0,0)))
   pg.newPoint(new Point(0.2,-0.2, new Color(0,255,255)))
 
-  
+  await sleep(500)  
   state.pushShape(pg)
   state.draw()
 
+  await sleep(500)
   state.pushShape(rt)
   state.draw()
 
+  await sleep(500)
   state.pushShape(sq)
   state.draw()
 
 
   
 
-  console.log(pg)
   
 }
