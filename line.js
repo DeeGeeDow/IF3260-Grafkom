@@ -12,9 +12,8 @@ class Line extends Shape {
     }
 
     /**
-     * Mengembalikan panjang garis
-     * @param {RenderingContext} gl 
-     * @param {Point[]} points 
+     * Mengembalikan panjang garis 
+     * @returns {number}
      */
     getLength(){
         let x_sq = Math.pow((this.points[1].x - this.points[0].x),2);
@@ -24,8 +23,7 @@ class Line extends Shape {
 
     /**
      * Ganti panjang garis
-     * @param {RenderingContext} gl 
-     * @param {Point[]} points 
+     * @param {number} new_l
      */ 
     setLength(new_l){
         let l = this.getLength();
