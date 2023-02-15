@@ -7,9 +7,10 @@ class Point {
      * @param {number} x 
      * @param {number} y 
      */
-    constructor(x = 0, y = 0, color = new Color()){
+    constructor(x = 0, y = 0, color = new Color(), name = "Point"){
         this.x = x;
         this.y = y;
+        this.name = name
         this.color = color;
     }
 
@@ -39,5 +40,9 @@ class Point {
     toVertice(){
         return [this.x,this.y, ...this.color.toDecimalArr()]
     }
+
+    /**
+     * Draw square
+     */
 
 }

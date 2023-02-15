@@ -20,6 +20,7 @@ class Shape {
      * Draw
      */
     draw(){
+        this.updatePointName();
         const vertices = this.toVertices();
         this.gl.bufferData(
             gl.ARRAY_BUFFER,
@@ -29,13 +30,32 @@ class Shape {
         this.gl.drawArrays(this.GL_SHAPE, 0, this.points.length)
     }
 
+    drawPointsMarker(){
+        let vertices = []
+        for (let point of this.points){
+            let newPoints = [
+                new Point(point.x - 0.015, point.y + 0.015),
+                new Point(point.x - 0.015, point.y - 0.015),
+                new Point(point.x + 0.015, point.y - 0.015),
+                new Point(point.x + 0.015, point.y + 0.015),
+            ]
+            vertices = this.toVertices(newPoints)
+            this.gl.bufferData(
+                gl.ARRAY_BUFFER,
+                new Float32Array(vertices),
+                gl.STATIC_DRAW
+            );
+            this.gl.drawArrays(this.GL_SHAPE, 0, this.points.length)
+        }
+    }
+
     /**
      * Turn this shape's points into vertices
      * @returns 
      */
-    toVertices(){
+    toVertices(points = this.points){
         let vertices = [];
-        for (let point of this.points){
+        for (let point of points){
             vertices.push(
                 ...point.toVertice()
             )
@@ -55,6 +75,15 @@ class Shape {
             newPoints.push(point);
         }
         this.points = newPoints;
+    }
+
+    updatePointName(){
+        let i = 1
+        let newPoints = []
+        for (let point of this.points){
+            newPoints.push(new Point(point.x,point.y,point.color,point.name + " " + i.toString()))
+        }
+        this.points = newPoints;l
     }
 
     

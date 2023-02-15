@@ -26,6 +26,7 @@ class State {
         gl.clear(gl.COLOR_BUFFER_BIT);
         for (let shape of this.shapes){
             shape.draw()
+            shape.drawPointsMarker()
         }
     }
 
