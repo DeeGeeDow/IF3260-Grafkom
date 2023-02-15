@@ -18,6 +18,8 @@ class State {
 
         this.gl.clearColor(1,1,1,1);
         this.gl.clear(gl.COLOR_BUFFER_BIT);
+        
+        document.getElementById("clearButton").addEventListener("click", this.clearSelection.bind(this))
     }
 
     /**
@@ -158,6 +160,12 @@ class State {
             }
           }
         this.selectedShape = selectedShape;
-        this.draw()
+        this.draw();
+    }
+
+    clearSelection(ev){
+        this.selectedPoint = null;
+        this.selectedShape = null;
+        this.draw();
     }
 }
