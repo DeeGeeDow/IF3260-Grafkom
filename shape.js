@@ -86,5 +86,19 @@ class Shape {
         this.points = newPoints;l
     }
 
+    /**
+     * 
+     * @param {Point} center 
+     * @param {number} k 
+     */
+    dilate(center, k){
+        let newPoints = []
+        for (let point of this.points){
+            point.x = center.x + k*(point.x - center.x);
+            point.y = center.y + k*(point.y - center.y);
+            newPoints.push(point);
+        }
+        this.points = newPoints;
+    }
     
 }
