@@ -62,7 +62,8 @@ class State {
     updateShapeList(){
         const shapeList = document.getElementById("shapeList");
         this._emptyOl(shapeList)
-        for (let shape of this.shapes){
+        for (let i = this.shapes.length - 1; i > -1; i -= 1){
+            const shape = this.shapes[i]
             const shapeButton = document.createElement("button")
             shapeButton.innerHTML = shape.name
 
@@ -72,7 +73,7 @@ class State {
             newLi.appendChild(shapeButton)
 
             const pointsOl = document.createElement("ol")
-            let i = 1
+            let j = 1
             for (let point of shape.points ){
                 const pointButton = document.createElement("button")
                 pointButton.innerHTML = point.name
@@ -81,7 +82,7 @@ class State {
                 const pointLi = document.createElement("li")
                 pointLi.appendChild(pointButton)
                 pointsOl.appendChild(pointLi)
-                i = i + 1;
+                j = j + 1;
             }
 
             newLi.appendChild(pointsOl);
@@ -110,6 +111,7 @@ class State {
      */
     selectShape(name, ev){
         this.selectedPoint = null;
+        this.clearSelectedPointText();
         this.getSelectedShape(name,ev);
     }
 
@@ -120,9 +122,11 @@ class State {
      * @param {MouseEvent} ev 
      */
     selectPoint(shapeName, pointName, ev){
+        
         if (this.selectedShape === null || this.selectedShape.name !== shapeName){
             this.getSelectedShape(shapeName,ev)
         }
+        console.log(this.selectedShape.points)
         this.getSelectedPoint(pointName, ev)
     }
 
@@ -141,6 +145,7 @@ class State {
           }
 
         this.selectedPoint = selectedPoint;
+        this.setSelectedPointText(this.selectedPoint.name)
         this.draw()
     }
 
@@ -160,12 +165,47 @@ class State {
             }
           }
         this.selectedShape = selectedShape;
+        this.setSelectedShapeText(selectedShape.name)
+        this.draw();
+    }
+
+    /**
+     * Menghapus shape
+     */
+    deleteSelectedShape(){
+        if (this.selectedShape === null){
+            return
+        }
+        let newShapes = [];
+        for (let shape of this.shapes){
+            if (shape.name !== this.selectedShape.name){
+                newShapes.push(shape)
+            }
+        }
+        this.shapes = newShapes;
+        this.clearSelection();
         this.draw();
     }
 
     clearSelection(ev){
         this.selectedPoint = null;
         this.selectedShape = null;
+        this.clearSelectedShapeText()
+        this.clearSelectedPointText()
         this.draw();
+    }
+
+    setSelectedShapeText(text = ""){
+        document.getElementById("selectedShape").innerHTML = text
+    }
+    clearSelectedShapeText(){
+        document.getElementById("selectedShape").innerHTML = ""
+    }
+
+    setSelectedPointText(text = ""){
+        document.getElementById("selectedPoint").innerHTML = text
+    }
+    clearSelectedPointText(){
+        document.getElementById("selectedPoint").innerHTML = ""
     }
 }

@@ -124,12 +124,46 @@ class Shape {
      */
     getCentroid(){
         let n = this.points.length;
-        centroid = new Point(0,0);
-        for(p of this.points){
+        let centroid = new Point(0,0);
+        for(let p of this.points){
             centroid.add(p.x,p.y);
         }
         centroid.x /= n;
         centroid.y /= n;
         return centroid;
     }
+
+    /**
+     * 
+     * @param {number} r 
+     * @param {number} g 
+     * @param {number} b 
+     */
+    changeShapeColor(r,g,b){
+        let newPoints = []
+        for (let point of this.points){
+            point.color = new Color(r,g,b)
+            newPoints.push(point);
+        }
+        this.points = newPoints;
+    }
+
+    /**
+     * 
+     * @param {Point} selectedPoint
+     * @param {number} r 
+     * @param {number} g 
+     * @param {number} b 
+     */
+    changePointColor(selectedPoint,r,g,b){
+        let newPoints = []
+        for (let point of this.points){
+            if (point.name === selectedPoint.name){
+                point.color = new Color(r,g,b)
+            }
+            newPoints.push(point);
+        }
+        this.points = newPoints;
+    }
+
 }

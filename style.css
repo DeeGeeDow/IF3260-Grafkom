@@ -9,18 +9,45 @@
     cursor: not-allowed;
 }
 
+h2{
+    margin: 0;
+}
+h3{
+    margin: 0;
+}
+p{
+    margin: 0.2em;
+}
+
+.toolContainer{
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 0.2em;
+}
+
+.translateButtonContainer{
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+
+.tool{
+    padding: 0.2em;
+    border-style: dotted;
+}
+
 .leftPane{
     width: 15em;
     margin: 1em;
 }
-#square{
-    margin :auto;
-    position: relative;
-    width : auto;
+
+.rightPane{
+    margin: 1em;
 }
+
 .button-container{
     display : flex;
-
+    justify-content: space-between;
 }
 .flex-col {
     display: flex;
@@ -36,10 +63,14 @@
     flex-direction: row;
 }
 
+.center{
+    margin: 0 auto;
+}
+
 .btn {
     font-size: 14px;
     padding: 6px 12px;
-    margin-bottom: 0;
+    margin: 0.2em 0;
 
     display: inline-block;
     text-decoration: none;
@@ -96,3 +127,45 @@
     background-color: #e6e6e6;
     border-color: #adadad;
 }
+
+.btn-danger {
+    background-image: -webkit-linear-gradient(top, #d9534f 0%, #c12e2a 100%);
+    background-image: -o-linear-gradient(top, #d9534f 0%, #c12e2a 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#d9534f), to(#c12e2a));
+    background-image: linear-gradient(to bottom, #d9534f 0%, #c12e2a 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd9534f', endColorstr='#ffc12e2a', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+    background-repeat: repeat-x;
+    border-color: #b92c28;
+  }
+  .btn-danger:hover,
+  .btn-danger:focus {
+    background-color: #c12e2a;
+    background-position: 0 -15px;
+  }
+  .btn-danger:active,
+  .btn-danger.active {
+    background-color: #c12e2a;
+    border-color: #b92c28;
+  }
+  .btn-danger.disabled,
+  .btn-danger[disabled],
+  fieldset[disabled] .btn-danger,
+  .btn-danger.disabled:hover,
+  .btn-danger[disabled]:hover,
+  fieldset[disabled] .btn-danger:hover,
+  .btn-danger.disabled:focus,
+  .btn-danger[disabled]:focus,
+  fieldset[disabled] .btn-danger:focus,
+  .btn-danger.disabled.focus,
+  .btn-danger[disabled].focus,
+  fieldset[disabled] .btn-danger.focus,
+  .btn-danger.disabled:active,
+  .btn-danger[disabled]:active,
+  fieldset[disabled] .btn-danger:active,
+  .btn-danger.disabled.active,
+  .btn-danger[disabled].active,
+  fieldset[disabled] .btn-danger.active {
+    background-color: #c12e2a;
+    background-image: none;
+  }

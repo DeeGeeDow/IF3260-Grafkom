@@ -42,7 +42,59 @@ class Point {
     }
 
     /**
-     * Draw square
+     * 
+     * @param {Point[]} points 
+     * @returns {boolean}
      */
+    isMostLeft(points){
+        for (let point of points){
+            if (point.x < this.x){
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * 
+     * @param {Point[]} points 
+     * @returns {boolean}
+     */
+    isMostRight(points){
+        for (let point of points){
+            if (point.x > this.x){
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * 
+     * @param {Point[]} points 
+     * @returns {boolean}
+     */
+    isMostUpper(points){
+        for (let point of points){
+            if (point.y > this.y){
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * 
+     * @param {Point[]} points 
+     * @returns {boolean}
+     */
+    isMostLower(points){
+        for (let point of points){
+            if (point.y < this.y){
+                return false
+            }
+        }
+        return true
+    }
 
 }

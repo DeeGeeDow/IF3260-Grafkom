@@ -19,4 +19,6 @@ class Square extends Shape {
             this.points = newPoints
         }
     }
+
+    
 }

@@ -70,63 +70,328 @@ gl.useProgram(program);
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-async function main(){  
-  //sample data
-  // let triangle = [
-  //   0.0, 0.0, 0.0, 0.0, 0.0,
-  //   0.0, 1, 0.0, 0.0, 0.0,
-  //   1, 0.0, 0.0, 0.0, 0.0,
-  // ];
+/**
+ * 
+ * @param {State} state 
+ */
+function createSquare(state){
+  let sq = new Square(gl,[new Point(0,0)])
+  state.pushShape(sq)
+  state.draw()
+}
 
-//   var positions = [
-//     -0.7 ,-0.1 ,1,0,0,
-//     -0.3 ,0.6  ,0,0,0,
-//     -0.3 ,-0.3 ,0,0,0,
-//     0.2  ,0.6  ,0,0,0,
-//     0.3  ,-0.3 ,0,0,0,
-//     0.7  ,0.6  ,0,0,0, 
-//  ]
+/**
+ * 
+ * @param {State} state 
+ */
+function perbesar(state){
+  if (state.selectedShape === null){
+    return
+  }
+  const multiplier = parseInt(document.getElementById("multiplier").value)
+  const centroid = state.selectedShape.getCentroid();
+  const k = 1 + (multiplier/100)
+  state.selectedShape.dilate(centroid, k);
+  state.draw();
+}
 
+/**
+ * 
+ * @param {State} state 
+ */
+function perkecil(state){
+  if (state.selectedShape === null){
+    return
+  }
+  const multiplier = parseInt(document.getElementById("multiplier").value)
+  const centroid = state.selectedShape.getCentroid();
+  const k = 1 - (multiplier/100)
+  state.selectedShape.dilate(centroid, k);
+  state.draw();
+}
+
+/**
+ * 
+ * @param {State} state
+ */
+function changeShapeColor(state){
+  if (state.selectedShape === null){
+    return
+  }
+  const value = document.getElementById("shapeColorPicker").value
+  const aRgb = hexColorToRGB(value);
+  state.selectedShape.changeShapeColor(aRgb[0],aRgb[1],aRgb[2])
+  state.draw()
+}
+
+/**
+ * 
+ * @param {State} state
+ */
+function changePointColor(state){
+  if (state.selectedShape === null || state.selectedPoint === null){
+    return
+  }
+  const value = document.getElementById("pointColorPicker").value
+  const aRgb = hexColorToRGB(value);
+  state.selectedShape.changePointColor(state.selectedPoint,aRgb[0],aRgb[1],aRgb[2])
+  state.draw()
+}
+
+/**
+ * 
+ * @param {String} hex 
+ */
+function hexColorToRGB(hex){
+  var aRgb = [
+      parseInt(hex.substring(1,3), 16),
+      parseInt(hex.substring(3,5), 16),
+      parseInt(hex.substring(5,7), 16)
+  ];
+  return aRgb;
+}
+
+/**
+ * 
+ * @param {State} state
+ */
+function translasiAtas(state){
+  if (state.selectedShape === null){
+    return
+  }
+  state.selectedShape.translate(0,0.0075)
+  state.draw()
+}
+/**
+ * 
+ * @param {State} state
+ */
+function translasiKiri(state){
+  if (state.selectedShape === null){
+    return
+  }
+  state.selectedShape.translate(-0.0075,0)
+  state.draw()
+}
+/**
+ * 
+ * @param {State} state
+ */
+function translasiKanan(state){
+  if (state.selectedShape === null){
+    return
+  }
+  state.selectedShape.translate(0.0075,0)
+  state.draw()
+}
+/**
+ * 
+ * @param {State} state
+ */
+function translasiBawah(state){
+  if (state.selectedShape === null){
+    return
+  }
+  state.selectedShape.translate(0,-0.0075)
+  state.draw()
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @param {Event} e 
+ */
+function translasiOnKey(state, e){
+  e = e || window.event;
+  if (e.keyCode == '38') {
+    translasiAtas(state)
+  }
+  else if (e.keyCode == '40') {
+    translasiBawah(state)
+  }
+  else if (e.keyCode == '37') {
+    translasiKiri(state)
+  }
+  else if (e.keyCode == '39') {
+    translasiKanan(state)
+  }
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @param {String} direction 
+ */
+function geserTitik(state, direction){
+  if (state.selectedShape === null || state.selectedPoint === null){
+    return
+  }
+
+  const isMostUpper = state.selectedPoint.isMostUpper(state.selectedShape.points)
+  const isMostLower = state.selectedPoint.isMostLower(state.selectedShape.points)
+  const isMostLeft = state.selectedPoint.isMostLeft(state.selectedShape.points)
+  const isMostRight = state.selectedPoint.isMostRight(state.selectedShape.points)
   
-//   let c1 = new Color(255,0,0)
-//   let p1 = new Point()
-//   let p2 = new Point(0,1)
-//   let p3 = new Point(1,0,c1)
-//   console.log(p1.toVertice())
-//   console.log(p2.toVertice())
-//   console.log(p3.toVertice())
-//   const triangle = [
-//     ...p1.toVertice(),
-//     ...p2.toVertice(),
-//     ...p3.toVertice()
-//   ]
-//   let points = [p1,p2,p3];
-//   let vertices = [];
-//   for (let point of points){
-//       vertices.push(
-//           ...point.toVertice()
-//       )
-//   }
-//   console.log(vertices);
+  if (state.selectedShape instanceof Square){
+    if ((isMostUpper && isMostLeft) || (isMostLower && isMostRight)){
+      switch (direction) {
+        case "up":
+        case "left":
+          upLeft(state);
+          break;
+        case "down":
+        case "right":
+          downRight(state);
+          break;          
+        default:
+          break;
+      }
+    } else if ((isMostUpper && isMostRight) || (isMostLower && isMostLeft)){
+      switch (direction) {
+        case "up":
+        case "right":
+          upRight(state);
+          break;
+        case "down":
+        case "left":
+          downLeft(state);
+          break;          
+        default:
+          break;
+      }    
+    }
+  } else if (state.selectedShape instanceof Rectangle){
+    console.log("rectangle")
+  } else if (state.selectedShape instanceof Line){
+    console.log("line")
+  } else if (state.selectedShape instanceof Polygon){
+    let newPoints = []
+    for (let point of state.selectedShape.points){
+      if (point.name === state.selectedPoint.name){
+        switch (direction) {
+          case "up":
+            point.add(0,0.0075); 
+            break;
+          case "right":
+            point.add(0.0075,0)
+            break;
+          case "down":
+            point.add(0,-0.0075);
+            break;
+          case "left":
+            point.add(-0.0075,0);
+            break;          
+          default:
+            break;
+        }
+        state.selectedPoint = point 
+      }
+      newPoints.push(point)
+    }
+    state.selectedShape.points = newPoints;
+  }
+  state.draw()
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @param {Event} e 
+ */
+function geserTitikOnKey(state, e){
+  e = e || window.event;
+  if (e.keyCode == '38') {
+    geserTitik(state, "up")
+  }
+  else if (e.keyCode == '40') {
+    geserTitik(state, "down")
+  }
+  else if (e.keyCode == '37') {
+    geserTitik(state, "left")
+  }
+  else if (e.keyCode == '39') {
+    geserTitik(state, "right")
+  }
+}
+
+function upLeft(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(-0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(-0.0075,0.0075)
+  state.selectedShape.points = newPoints
+}
+
+function upRight(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(0.0075,0.0075)
+  state.selectedShape.points = newPoints
+}
+
+function downLeft(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(-0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,-0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(-0.0075,-0.0075)
+  state.selectedShape.points = newPoints
+}
+
+function downRight(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,-0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(0.0075,-0.0075)
+  state.selectedShape.points = newPoints
+}
 
 
 
-  let sq = new Square(gl,[new Point(-0.5,-0.5, new Color(0,0,255))])
-  // console.log(sq.points)
-  // // sq.draw()
-  
-  
-  
-  // for (let i = 0; i < 5 ; i++){
-  //   sq.translate(0.1,0.1);
-  //   gl.clearColor(1,1,1,1);
-  //   gl.clear(gl.COLOR_BUFFER_BIT);
-  //   sq.draw()
-  //   await sleep(500)
-  // }
 
+
+async function main(){
   let rt = new Rectangle(gl, [new Point(0.0,0.0,new Color(255,0,0)), new Point(0.5,0.7,new Color(0,255,0))])
-  // rt.draw()
 
   let state = new State(gl);
   
@@ -144,11 +409,62 @@ async function main(){
   state.draw()
 
   await sleep(500)
-  state.pushShape(sq)
-  state.draw()
+  createSquare(state)
 
 
-  
+  const createSquareButton = document.getElementById("square")
+  createSquareButton.addEventListener("click",createSquare.bind(null,state))
+
+  const dilatasiPerbesarButton = document.getElementById("dilatasiPlus")
+  dilatasiPerbesarButton.addEventListener("click", perbesar.bind(null, state))
+
+  const dilatasiPerkecilButton = document.getElementById("dilatasiMinus")
+  dilatasiPerkecilButton.addEventListener("click", perkecil.bind(null, state))
+
+  const shapeColorPicker = document.getElementById("shapeColorPicker")
+  shapeColorPicker.addEventListener("change", changeShapeColor.bind(null, state))
+
+  const pointColorPicker = document.getElementById("pointColorPicker")
+  pointColorPicker.addEventListener("change", changePointColor.bind(null, state))
+
+  const translasiAtasButton = document.getElementById("translasiUp")
+  translasiAtasButton.addEventListener("click",translasiAtas.bind(null, state))
+  translasiAtasButton.addEventListener("keydown", translasiOnKey.bind(null, state))
+
+  const translasiKiriButton = document.getElementById("translasiLeft")
+  translasiKiriButton.addEventListener("click", translasiKiri.bind(null, state))
+  translasiKiriButton.addEventListener("keydown", translasiOnKey.bind(null, state))
+
+  const translasiBawahButton = document.getElementById("translasiDown")
+  translasiBawahButton.addEventListener("click", translasiBawah.bind(null, state))
+  translasiBawahButton.addEventListener("keydown", translasiOnKey.bind(null, state))
+
+  const translasiKananButton = document.getElementById("translasiRight")
+  translasiKananButton.addEventListener("click", translasiKanan.bind(null, state))
+  translasiKananButton.addEventListener("keydown", translasiOnKey.bind(null, state))
+
+  const deleteShapeButton = document.getElementById("hapusShape")
+  deleteShapeButton.addEventListener("click", state.deleteSelectedShape.bind(state))
+
+  const geserTitikAtasButton = document.getElementById("geserTitikUp")
+  geserTitikAtasButton.addEventListener("click", geserTitik.bind(null, state, "up"))
+  geserTitikAtasButton.addEventListener("keydown", geserTitikOnKey.bind(null, state))
+
+  const geserTitikKiriButton = document.getElementById("geserTitikLeft")
+  geserTitikKiriButton.addEventListener("click", geserTitik.bind(null, state, "left"))
+  geserTitikKiriButton.addEventListener("keydown", geserTitikOnKey.bind(null, state))
+
+
+  const geserTitikKananButton = document.getElementById("geserTitikRight")
+  geserTitikKananButton.addEventListener("click", geserTitik.bind(null, state, "right"))
+  geserTitikKananButton.addEventListener("keydown", geserTitikOnKey.bind(null, state))
+
+
+  const geserTitikBawahButton = document.getElementById("geserTitikDown")
+  geserTitikBawahButton.addEventListener("click", geserTitik.bind(null, state, "down"))
+  geserTitikBawahButton.addEventListener("keydown", geserTitikOnKey.bind(null, state))
 
   
 }
+
+
