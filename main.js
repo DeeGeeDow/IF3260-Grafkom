@@ -22,6 +22,8 @@ const fragmentShaderText = `precision mediump float;
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 let flagLine=false;
+let flagRectangle=false;
+
 canvas.width = Math.round(95 / 100 * vh)
 canvas.height = Math.round(95 / 100 * vh)
 
@@ -388,18 +390,23 @@ function downRight(state){
 function main(){
   let state = new State(gl);
   const createLineButton=document.getElementById("line")
+  const createRectangleButton=document.getElementById("rectangle")
+
   function createLine(){
     canvas.addEventListener('mousedown',(e)=>{
       mousedownLineEvent(e)
+
     })
       canvas.addEventListener('mousemove',(e)=>{
         mousemoveLineEvent(e)
       })
         canvas.addEventListener('mouseup',(e)=>{
-        mouseupLineEvent(e)  
+
+          mouseupLineEvent(e)  
     })
   }
   function mousedownLineEvent(e){
+    console.log('lalaa')
     let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
     let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
     let line = new Line(gl,[new Point(x,y)]);
@@ -414,19 +421,63 @@ function main(){
     let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
     let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
     if(flagLine){
-          console.log('masuk')
-
       for (let i = state.shapes.length-1 ;i>=0;i--){
+        if(state.shapes[i].name.slice(0,4)==="Line"){
         state.shapes[i].points[0].x= new_x
         state.shapes[i].points[0].y= new_y
-        console.log("masuk",state.shapes)
         state.draw()
+        console.log('tesssline')
+
         break
+        }
+      }
+    } 
+  }
+  function createRectangle(){
+    canvas.addEventListener('mousedown',(e)=>{
+      mousedownRectangleEvent(e)
+    })
+      canvas.addEventListener('mousemove',(e)=>{
+        mousemoveRectangleEvent(e)
+      })
+        canvas.addEventListener('mouseup',(e)=>{
+          mouseupRectangleEvent(e)  
+    })
+  }
+  function mousedownRectangleEvent(e){
+    let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+    let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+
+    let rt = new Rectangle(gl,[new Point(x,y)]);
+    rt.newPoint(new Point(x,y))
+    rt.newPoint(new Point(x,y))
+    rt.newPoint(new Point(x,y))
+    state.pushShape(rt)
+    flagRectangle=true;
+  }
+  function mouseupRectangleEvent(e){
+    flagRectangle=false;
+  }
+  function mousemoveRectangleEvent(e){
+    let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+    let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+    if(flagRectangle){
+      for (let i = state.shapes.length-1 ;i>=0;i--){
+        if(state.shapes[i].name.slice(0,9)=="Rectangle"){
+          state.shapes[i].points[1].x= new_x
+          state.shapes[i].points[2].y= new_y
+          state.shapes[i].points[2].x= new_x
+          state.shapes[i].points[3].y=new_y
+          state.draw()
+          console.log('tesss')
+          break  
+        }
       }
     } 
 
-  }  
+  }
   createLineButton.addEventListener("click",createLine())
+  // createRectangleButton.addEventListener("click",createRectangle())
   let pg = new Polygon(gl,[new Point(0.8,-0.2, new Color(0,0,255))])
   pg.newPoint(new Point(-0.8,-0.8, new Color(0,255,0)))
   pg.newPoint(new Point(-0.2,-0.8,new Color(255,0,0)))

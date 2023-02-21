@@ -18,4 +18,12 @@ class Rectangle extends Shape {
             this.points = newPoints
         }
     }
+        /**
+     * Menambahkan titik baru
+     * @param {Point} point 
+     */
+        newPoint(point = new Point()){
+            this.points.push(point)
+        }
+    
 }
