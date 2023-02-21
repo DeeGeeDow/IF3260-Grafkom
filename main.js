@@ -21,7 +21,7 @@ const fragmentShaderText = `precision mediump float;
 /*------------------- INITIALIZE WEBGL -------------------------*/
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-
+let flagLine=false;
 canvas.width = Math.round(95 / 100 * vh)
 canvas.height = Math.round(95 / 100 * vh)
 
@@ -263,7 +263,7 @@ function geserTitik(state, direction){
   } else if (state.selectedShape instanceof Rectangle){
     console.log("rectangle")
   } else if (state.selectedShape instanceof Line){
-    console.log("line")
+    state.selectedShape.draw();
   } else if (state.selectedShape instanceof Polygon){
     let newPoints = []
     for (let point of state.selectedShape.points){
@@ -385,31 +385,52 @@ function downRight(state){
   selectedPoint.add(0.0075,-0.0075)
   state.selectedShape.points = newPoints
 }
-
-
-
-
-
-async function main(){
-  let rt = new Rectangle(gl, [new Point(0.0,0.0,new Color(255,0,0)), new Point(0.5,0.7,new Color(0,255,0))])
-
+function main(){
   let state = new State(gl);
-  
+  const createLineButton=document.getElementById("line")
+  function createLine(){
+    canvas.addEventListener('mousedown',(e)=>{
+      mousedownLineEvent(e)
+    })
+      canvas.addEventListener('mousemove',(e)=>{
+        mousemoveLineEvent(e)
+      })
+        canvas.addEventListener('mouseup',(e)=>{
+        mouseupLineEvent(e)  
+    })
+  }
+  function mousedownLineEvent(e){
+    let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+    let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+    let line = new Line(gl,[new Point(x,y)]);
+    line.newPoint(new Point(x,y))
+    state.pushShape(line)
+    flagLine=true;
+  }
+  function mouseupLineEvent(e){
+    flagLine=false;
+  }
+  function mousemoveLineEvent(e){
+    let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+    let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+    if(flagLine){
+          console.log('masuk')
+
+      for (let i = state.shapes.length-1 ;i>=0;i--){
+        state.shapes[i].points[0].x= new_x
+        state.shapes[i].points[0].y= new_y
+        console.log("masuk",state.shapes)
+        state.draw()
+        break
+      }
+    } 
+
+  }  
+  createLineButton.addEventListener("click",createLine())
   let pg = new Polygon(gl,[new Point(0.8,-0.2, new Color(0,0,255))])
   pg.newPoint(new Point(-0.8,-0.8, new Color(0,255,0)))
   pg.newPoint(new Point(-0.2,-0.8,new Color(255,0,0)))
   pg.newPoint(new Point(0.2,-0.2, new Color(0,255,255)))
-
-  await sleep(500)  
-  state.pushShape(pg)
-  state.draw()
-
-  await sleep(500)
-  state.pushShape(rt)
-  state.draw()
-
-  await sleep(500)
-  createSquare(state)
 
 
   const createSquareButton = document.getElementById("square")

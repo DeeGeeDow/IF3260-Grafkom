@@ -13,9 +13,7 @@ class State {
         this.selectedShape = null
         /** @type {Point} */
         this.selectedPoint = null
-
         this.gl = gl;
-
         this.gl.clearColor(1,1,1,1);
         this.gl.clear(gl.COLOR_BUFFER_BIT);
         

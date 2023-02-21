@@ -10,6 +10,13 @@ class Line extends Shape {
             this.points = points;
         }
     }
+    /**
+     * Menambahkan titik baru
+     * @param {Point} point 
+     */
+    newPoint(point = new Point()){
+        this.points.push(point)
+    }
 
     /**
      * Mengembalikan panjang garis 
