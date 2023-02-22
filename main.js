@@ -474,8 +474,7 @@ function save(state) {
     function mousedownLineEvent(state,e){
       let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
-      let line = new Line(gl,[new Point(x,y)]);
-      line.newPoint(new Point(x,y))
+      let line = new Line(gl,[new Point(0,0),new Point(x,y)]);
       console.log(state);
       state.pushShape(line)
       flagLine=true;
@@ -516,10 +515,8 @@ function save(state) {
       let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
   
-      let rectangle = new Rectangle(gl,[new Point(x,y)]);
-      if (rectangle instanceof Rectangle){
-        console.log('true')
-      }
+      let rectangle = new Rectangle(gl,[new Point(x,y),new Point(x,y)]);
+      rectangle.draw()
       state.pushShape(rectangle)
       flagRectangle=true;
     }
@@ -548,9 +545,9 @@ function main(){
   const createLineButton=document.getElementById("line")
   const createRectangleButton=document.getElementById("rectangle")
   const createSquareButton=document.getElementById("square")
-  createRectangleButton.addEventListener("click",createRectangle(null,state))
-  createLineButton.addEventListener("click",createLine.bind(null,state))
-  createSquareButton.addEventListener("click",createSquare.bind(null,state))
+  createRectangleButton.addEventListener("click",() =>createRectangle(state))
+  createLineButton.addEventListener("click",() =>createLine(state))
+  createSquareButton.addEventListener("click",() =>createSquare(state))
   console.log(state);
   // let pg = new Polygon(gl,[new Point(0.8,-0.2, new Color(0,0,255))])
   // pg.newPoint(new Point(-0.8,-0.8, new Color(0,255,0)))
