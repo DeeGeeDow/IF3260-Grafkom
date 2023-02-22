@@ -6,14 +6,14 @@ class Rectangle extends Shape {
      */
     constructor(gl, points){
         super(gl, points, gl.TRIANGLE_FAN,"Rectangle");
-        if (points.length === 2){
-            const point1 = points[0];
-            const point2 = points[1];
+        if (points.length === 1){
+            const point = points[0];
+            console.log('true p')
             let newPoints = [
-                new Point(point1.x, point1.y,point1.color),
-                new Point(point1.x, point2.y,point2.color),
-                new Point(point2.x, point2.y,point2.color),
-                new Point(point2.x, point1.y,point1.color),
+                new Point(point.x, point.y,point.color),
+                new Point(point.x, point.y,point.color),
+                new Point(point.x, point.y,point.color),
+                new Point(point.x, point.y,point.color),
             ]
             this.points = newPoints
         }

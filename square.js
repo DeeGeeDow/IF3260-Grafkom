@@ -11,14 +11,19 @@ class Square extends Shape {
             const point = points[0];
             
             let newPoints = [
-                new Point(point.x - 0.3, point.y + 0.3, point.color),
-                new Point(point.x - 0.3, point.y - 0.3, point.color),
-                new Point(point.x + 0.3, point.y - 0.3, point.color),
-                new Point(point.x + 0.3, point.y + 0.3, point.color),
+                new Point(point.x , point.y , point.color),
+                new Point(point.x , point.y , point.color),
+                new Point(point.x, point.y , point.color),
+                new Point(point.x , point.y , point.color),
             ]
             this.points = newPoints
         }
-    }
-
-    
+    }       
+            /**
+     * Menambahkan titik baru
+     * @param {Point} point 
+     */
+            newPoint(point = new Point()){
+                this.points.push(point)
+            }    
 }

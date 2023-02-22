@@ -23,6 +23,7 @@ const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth
 const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 let flagLine=false;
 let flagRectangle=false;
+let flagSquare=false;
 
 canvas.width = Math.round(95 / 100 * vh)
 canvas.height = Math.round(95 / 100 * vh)
@@ -72,15 +73,15 @@ gl.useProgram(program);
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-/**
- * 
- * @param {State} state 
- */
-function createSquare(state){
-  let sq = new Square(gl,[new Point(0,0)])
-  state.pushShape(sq)
-  state.draw()
-}
+// /**
+//  * 
+//  * @param {State} state 
+//  */
+// function createSquare(state){
+//   let sq = new Square(gl,[new Point(0,0)])
+//   state.pushShape(sq)
+//   state.draw()
+// }
 
 /**
  * 
@@ -387,106 +388,176 @@ function downRight(state){
   selectedPoint.add(0.0075,-0.0075)
   state.selectedShape.points = newPoints
 }
+function download(content, filename = "WEBGL.json", contentType = "json") {
+  const a = document.createElement("a");
+  const file = new Blob([content], { type: contentType });
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function save(state) {
+  const data = { state };
+  download(JSON.stringify(data));
+}
+  function createSquare(state){
+    canvas.onmousedown=function(e){ 
+      e.preventDefault()
+      mousedownSquareEvent(state,e)
+    }
+      canvas.onmousemove=function(e){
+        e.preventDefault()
+        mousemoveSquareEvent(state,e)
+      }
+        canvas.onmouseup=function(e){
+          e.preventDefault()
+          mouseupSquareEvent(e)  
+    }
+  }
+  function mousedownSquareEvent(state,e){
+    let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+    let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+    let sq = new Square(gl,[new Point(x,y)]);
+    state.pushShape(sq)
+    flagSquare=true;
+  }
+  function mouseupSquareEvent(){
+    flagSquare=false;
+  }
+  function mousemoveSquareEvent(state,e){
+    let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+    let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+    if(flagSquare){
+      for (let i = state.shapes.length-1 ;i>=0;i--){
+        console.log(state)
+        if(state.shapes[i].name.slice(0,6)==="Square"){
+          let dx = new_x - state.shapes[i].points[0].x;
+          let dy = new_y - state.shapes[i].points[0].y;
+          let side = Math.min(Math.abs(dx), Math.abs(dy));
+          if (dx>0){
+            dx=side
+          }
+          else {
+            dx=-side
+          }
+          if(dy>0){
+            dy=side 
+          }else{
+            dy=-side
+          }
+          console.log('masuk',dx,dy)
+          state.shapes[i].points[1].x= state.shapes[i].points[0].x+dx
+          state.shapes[i].points[2].x= state.shapes[i].points[0].x+dx
+          state.shapes[i].points[2].y= state.shapes[i].points[0].y+dy
+          state.shapes[i].points[3].y= state.shapes[i].points[0].y+dy
+          state.draw()
+          break
+        }
+        }
+      }
+    }
+    function createLine(state){
+      canvas.onmousedown=function(e){
+        e.preventDefault()        
+        mousedownLineEvent(state,e)
+  
+      }
+        canvas.onmousemove=function(e){
+          e.preventDefault()
+          mousemoveLineEvent(state,e)
+        }
+          canvas.onmouseup=function(e){
+            e.preventDefault()
+            mouseupLineEvent(e)  
+      }
+    }
+    function mousedownLineEvent(state,e){
+      let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+      let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+      let line = new Line(gl,[new Point(x,y)]);
+      line.newPoint(new Point(x,y))
+      console.log(state);
+      state.pushShape(line)
+      flagLine=true;
+    }
+    function mouseupLineEvent(){
+      flagLine=false;
+    }
+    function mousemoveLineEvent(state,e){
+      let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+      let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+      if(flagLine){
+        for (let i = state.shapes.length-1 ;i>=0;i--){
+          if(state.shapes[i].name.slice(0,4)==="Line"){
+          state.shapes[i].points[0].x= new_x
+          state.shapes[i].points[0].y= new_y
+          state.draw()
+          console.log('tesssline')
+          break
+          }
+        }
+      } 
+    }
+    function createRectangle(state){
+      canvas.onmousedown=function(e){
+        e.preventDefault()
+        mousedownRectangleEvent(state,e)
+      }
+        canvas.onmousemove=function(e){
+          e.preventDefault()
+          mousemoveRectangleEvent(state,e)
+        }
+          canvas.onmouseup=function(e){
+            e.preventDefault()
+            mouseupRectangleEvent(e)  
+      }
+    }
+    function mousedownRectangleEvent(state,e){
+      let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+      let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+  
+      let rectangle = new Rectangle(gl,[new Point(x,y)]);
+      if (rectangle instanceof Rectangle){
+        console.log('true')
+      }
+      state.pushShape(rectangle)
+      flagRectangle=true;
+    }
+    function mouseupRectangleEvent(){
+      flagRectangle=false;
+    }
+    function mousemoveRectangleEvent(state,e){
+      let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+      let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+      if(flagRectangle){
+        for (let i = state.shapes.length-1 ;i>=0;i--){
+          if(state.shapes[i].name.slice(0,9)==="Rectangle"){
+            state.shapes[i].points[1].x= new_x
+            state.shapes[i].points[2].y= new_y
+            state.shapes[i].points[2].x= new_x
+            state.shapes[i].points[3].y=new_y
+            state.draw()
+            break  
+          }
+        }
+      } 
+    }
+  
 function main(){
   let state = new State(gl);
   const createLineButton=document.getElementById("line")
   const createRectangleButton=document.getElementById("rectangle")
-
-  function createLine(){
-    canvas.addEventListener('mousedown',(e)=>{
-      mousedownLineEvent(e)
-
-    })
-      canvas.addEventListener('mousemove',(e)=>{
-        mousemoveLineEvent(e)
-      })
-        canvas.addEventListener('mouseup',(e)=>{
-
-          mouseupLineEvent(e)  
-    })
-  }
-  function mousedownLineEvent(e){
-    console.log('lalaa')
-    let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
-    let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
-    let line = new Line(gl,[new Point(x,y)]);
-    line.newPoint(new Point(x,y))
-    state.pushShape(line)
-    flagLine=true;
-  }
-  function mouseupLineEvent(e){
-    flagLine=false;
-  }
-  function mousemoveLineEvent(e){
-    let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
-    let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
-    if(flagLine){
-      for (let i = state.shapes.length-1 ;i>=0;i--){
-        if(state.shapes[i].name.slice(0,4)==="Line"){
-        state.shapes[i].points[0].x= new_x
-        state.shapes[i].points[0].y= new_y
-        state.draw()
-        console.log('tesssline')
-
-        break
-        }
-      }
-    } 
-  }
-  function createRectangle(){
-    canvas.addEventListener('mousedown',(e)=>{
-      mousedownRectangleEvent(e)
-    })
-      canvas.addEventListener('mousemove',(e)=>{
-        mousemoveRectangleEvent(e)
-      })
-        canvas.addEventListener('mouseup',(e)=>{
-          mouseupRectangleEvent(e)  
-    })
-  }
-  function mousedownRectangleEvent(e){
-    let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
-    let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
-
-    let rt = new Rectangle(gl,[new Point(x,y)]);
-    rt.newPoint(new Point(x,y))
-    rt.newPoint(new Point(x,y))
-    rt.newPoint(new Point(x,y))
-    state.pushShape(rt)
-    flagRectangle=true;
-  }
-  function mouseupRectangleEvent(e){
-    flagRectangle=false;
-  }
-  function mousemoveRectangleEvent(e){
-    let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
-    let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
-    if(flagRectangle){
-      for (let i = state.shapes.length-1 ;i>=0;i--){
-        if(state.shapes[i].name.slice(0,9)=="Rectangle"){
-          state.shapes[i].points[1].x= new_x
-          state.shapes[i].points[2].y= new_y
-          state.shapes[i].points[2].x= new_x
-          state.shapes[i].points[3].y=new_y
-          state.draw()
-          console.log('tesss')
-          break  
-        }
-      }
-    } 
-
-  }
-  createLineButton.addEventListener("click",createLine())
-  // createRectangleButton.addEventListener("click",createRectangle())
-  let pg = new Polygon(gl,[new Point(0.8,-0.2, new Color(0,0,255))])
-  pg.newPoint(new Point(-0.8,-0.8, new Color(0,255,0)))
-  pg.newPoint(new Point(-0.2,-0.8,new Color(255,0,0)))
-  pg.newPoint(new Point(0.2,-0.2, new Color(0,255,255)))
-
-
-  const createSquareButton = document.getElementById("square")
+  const createSquareButton=document.getElementById("square")
+  createRectangleButton.addEventListener("click",createRectangle(null,state))
+  createLineButton.addEventListener("click",createLine.bind(null,state))
   createSquareButton.addEventListener("click",createSquare.bind(null,state))
-
+  console.log(state);
+  // let pg = new Polygon(gl,[new Point(0.8,-0.2, new Color(0,0,255))])
+  // pg.newPoint(new Point(-0.8,-0.8, new Color(0,255,0)))
+  // pg.newPoint(new Point(-0.2,-0.8,new Color(255,0,0)))
+  // pg.newPoint(new Point(0.2,-0.2, new Color(0,255,255)))
+  const savebutton = document.getElementById("save")
+  savebutton.addEventListener("click", save.bind(null,state))
   const dilatasiPerbesarButton = document.getElementById("dilatasiPlus")
   dilatasiPerbesarButton.addEventListener("click", perbesar.bind(null, state))
 
