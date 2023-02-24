@@ -23,7 +23,10 @@
       </canvas>
       <div class="rightPane">
         <div>
-          <h2>Shapes</h2>
+          <div class="flex">
+            <h2>Shapes</h2>
+            Hint:<p id="hint"> </p>
+          </div>
           <div id="button-container">
             <button class="btn btn-default" id="square">Create Square</button>
             <button  class="btn btn-default" id="line">Create Line</button>
@@ -75,7 +78,15 @@
           <div id="shapeColor" class="tool">
             <h3>Ganti warna titik</h3>
             <input type="color" id="pointColorPicker"/>
-          </div>          
+          </div>
+          <div id="tambahTitikPolygon" style="display:none">
+            <h3>Polygon:</h3>
+            <button class="btn btn-default" id="tambahTitikPolygonButton">Tambah titik</button>
+          </div>
+          <div id="hapusTitikPolygon" style="display:none">
+            <h3>Polygon:</h3>
+            <button class="btn btn-danger" id="hapusTitikPolygonButton">Hapus titik</button>
+          </div>
         </div>
 
         <div id="pointToolContainer" class="toolContainer">

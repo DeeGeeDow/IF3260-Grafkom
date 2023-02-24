@@ -164,6 +164,13 @@ class State {
             }
           }
         this.selectedShape = selectedShape;
+        if (selectedShape instanceof Polygon){
+            document.getElementById("tambahTitikPolygon").style.display = "";
+            document.getElementById("hapusTitikPolygon").style.display = "";
+        } else {
+            document.getElementById("tambahTitikPolygon").style.display = "none";
+            document.getElementById("hapusTitikPolygon").style.display = "none";
+        }
         this.setSelectedShapeText(selectedShape.name)
         this.draw();
     }

@@ -60,8 +60,16 @@ class Shape {
                 new Float32Array(vertices),
                 gl.STATIC_DRAW
             );
-            this.gl.drawArrays(this.GL_SHAPE, 0, this.points.length)
+            this.gl.drawArrays(this.GL_SHAPE, 0, newPoints.length)
         }
+    }
+    
+    /**
+     * 
+     * @param {Point} point 
+     */
+    addPoint(point){
+        this.points.push(point)
     }
 
     /**
