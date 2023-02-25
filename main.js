@@ -428,12 +428,32 @@ function handlemousemoveRec(state,rec,e){
   let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
   let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
     if(flagRectangle ){
-      rec[idx].points[1].x= new_x
-      rec[idx].points[2].y= new_y
-      rec[idx].points[2].x= new_x
-      rec[idx].points[3].y=new_y
+      if(idxPoint==0){
+        rec[idx].points[3].x= new_x
+        rec[idx].points[0].y= new_y
+        rec[idx].points[0].x= new_x
+        rec[idx].points[1].y=new_y
+      }
+      if(idxPoint==1){
+        rec[idx].points[2].x= new_x
+        rec[idx].points[1].y= new_y
+        rec[idx].points[1].x= new_x
+        rec[idx].points[0].y=new_y
+      }
+      if(idxPoint==2){
+        rec[idx].points[1].x= new_x
+        rec[idx].points[2].y= new_y
+        rec[idx].points[2].x= new_x
+        rec[idx].points[3].y=new_y
+  
+      }
+      if(idxPoint==3){
+        rec[idx].points[0].x= new_x
+        rec[idx].points[3].y= new_y
+        rec[idx].points[3].x= new_x
+        rec[idx].points[2].y=new_y
+      }
       state.draw()
-
     }
 }
 function handlemousedownRec(rec,e){
@@ -480,6 +500,27 @@ function handlemousemoveSquare(state,sq,e){
   let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
   let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
     if(flagSquare){
+      if(idxPoint==1){
+        let dx = new_x - sq[idx].points[3].x;
+        let dy = new_y - sq[idx].points[3].y;
+        let side = Math.min(Math.abs(dx), Math.abs(dy));
+        if (dx>0){
+          dx=side
+        }
+        else {
+          dx=-side
+        }
+        if(dy>0){
+          dy=side 
+        }else{
+          dy=-side
+        }
+        sq[idx].points[2].x= sq[idx].points[3].x+dx
+        sq[idx].points[1].x= sq[idx].points[3].x+dx
+        sq[idx].points[1].y= sq[idx].points[3].y+dy
+        sq[idx].points[0].y= sq[idx].points[3].y+dy
+      }
+      if(idxPoint==2){
         let dx = new_x - sq[idx].points[0].x;
         let dy = new_y - sq[idx].points[0].y;
         let side = Math.min(Math.abs(dx), Math.abs(dy));
@@ -498,6 +539,48 @@ function handlemousemoveSquare(state,sq,e){
         sq[idx].points[2].x= sq[idx].points[0].x+dx
         sq[idx].points[2].y= sq[idx].points[0].y+dy
         sq[idx].points[3].y= sq[idx].points[0].y+dy
+      }
+      if(idxPoint==0){
+        let dx = new_x - sq[idx].points[2].x;
+        let dy = new_y - sq[idx].points[2].y;
+        let side = Math.min(Math.abs(dx), Math.abs(dy));
+        if (dx>0){
+          dx=side
+        }
+        else {
+          dx=-side
+        }
+        if(dy>0){
+          dy=side 
+        }else{
+          dy=-side
+        }
+        sq[idx].points[3].x= sq[idx].points[2].x+dx
+        sq[idx].points[0].x= sq[idx].points[2].x+dx
+        sq[idx].points[0].y= sq[idx].points[2].y+dy
+        sq[idx].points[1].y= sq[idx].points[2].y+dy
+      }
+      if(idxPoint==3){
+        let dx = new_x - sq[idx].points[1].x;
+        let dy = new_y - sq[idx].points[1].y;
+        let side = Math.min(Math.abs(dx), Math.abs(dy));
+        if (dx>0){
+          dx=side
+        }
+        else {
+          dx=-side
+        }
+        if(dy>0){
+          dy=side 
+        }else{
+          dy=-side
+        }
+        sq[idx].points[0].x= sq[idx].points[1].x+dx
+        sq[idx].points[3].x= sq[idx].points[1].x+dx
+        sq[idx].points[3].y= sq[idx].points[1].y+dy
+        sq[idx].points[2].y= sq[idx].points[1].y+dy
+      }
+
         state.draw()
   }
 
@@ -694,6 +777,7 @@ function handlemouseupLine(e){
       flagRectangle=true;
     }
     function mouseupRectangleEvent(e){
+      e.preventDefault()
       flagRectangle=false;
     }
     function mousemoveRectangleEvent(state,e){
