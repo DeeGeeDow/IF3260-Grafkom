@@ -27,6 +27,7 @@ const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeig
 let flagLine=false;
 let flagRectangle=false;
 let flagSquare=false;
+let flagPolygon=false;
 
 canvas.width = Math.round(95 / 100 * vh)
 canvas.height = Math.round(95 / 100 * vh)
@@ -527,6 +528,8 @@ function handlemouseupLine(e){
   idxPoint=-1
 }
   function createSquare(state){
+    document.getElementById("hint").innerHTML = "click and drag"
+
     canvas.onmousedown=function(e){ 
       e.preventDefault()
       mousedownSquareEvent(state,e)
@@ -581,6 +584,8 @@ function handlemouseupLine(e){
       }
     }
     function createLine(state){
+    document.getElementById("hint").innerHTML = "click and drag"
+      
       canvas.onmousedown=function(e){
         e.preventDefault()        
         mousedownLineEvent(state,e)
@@ -620,6 +625,8 @@ function handlemouseupLine(e){
       } 
     }
     function createRectangle(state){
+      document.getElementById("hint").innerHTML = "click and drag"
+
       canvas.onmousedown=function(e){
         e.preventDefault()
         mousedownRectangleEvent(state,e)
@@ -661,15 +668,173 @@ function handlemouseupLine(e){
         }
       } 
     }
+
+function createPolygon(state) {
+  document.getElementById("hint").innerHTML = "click two first points"
+
+  canvas.onmousedown=function(e){ 
+    e.preventDefault()
+    mousedownPolygonEvent(state,e)
+  }
+  canvas.onmousemove=function(e){
+    e.preventDefault()
+    mousemovePolygonEvent(state,e)
+  }
+  canvas.oncontextmenu=function(e){
+    e.preventDefault()
+    rightClickPolygonEvent(state,e)
+  }
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @param {EventListener} e 
+ */
+function mousedownPolygonEvent(state,e){
+  let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+  /** @type {Polygon} */
+  let pg;
+  if (flagPolygon == false){
+    pg = new Polygon(gl, [new Point(x,y), new Point(x,y)])
+    flagPolygon = true
+    state.pushShape(pg)
+    state.draw()
+  } else{
+    for (let i = state.shapes.length-1 ;i>=0;i--){
+      if(state.shapes[i].name.slice(0,7)==="Polygon"){
+        state.shapes[i].addPoint(new Point(x,y))
+        state.draw()
+        break
+      }
+    }
+  }
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @param {EventListener} e 
+ */
+function mousemovePolygonEvent(state,e){
+  let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+  if(flagPolygon){
+    console.log("yes")
+    for (let i = state.shapes.length-1 ;i>=0;i--){
+      if(state.shapes[i].name.slice(0,7)==="Polygon"){
+        let s = state.shapes[i].points.length
+        state.shapes[i].points[s-1].x = new_x
+        state.shapes[i].points[s-1].y = new_y
+        state.draw()
+        break
+      }
+    }
+  } 
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @param {*} e 
+ */
+function rightClickPolygonEvent(state, e){
+  flagPolygon = false 
+  for (let i = state.shapes.length-1 ;i>=0;i--){
+    if(state.shapes[i].name.slice(0,7)==="Polygon"){
+      state.shapes[i].points.pop()
+      console.log(state.shapes[i])
+      state.draw()
+      break
+    }
+  }
+  document.getElementById("hint").innerHTML = ""
+  canvas.oncontextmenu = (e) => {};
+  canvas.onmousedown = (e) => {};
+  canvas.onmousemove = (e) => {};
+}
+
+/**
+ * 
+ * @param {State} state 
+ */
+function tambahTitikPolygon(state) {
+  document.getElementById("hint").innerHTML = "Tambahkan di canvas"
+
+  canvas.onmousedown=function(e){ 
+    e.preventDefault()
+    mousedownTambahTitikPolygon(state,e)
+  }
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @param {Event} e 
+ */
+function mousedownTambahTitikPolygon(state, e){
+  let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+  for (let i = 0; i < state.shapes.length; i++){
+    let shape = state.shapes[i]
+    if (shape.name === state.selectedShape.name){
+      state.shapes[i].addPoint(new Point(new_x,new_y))
+    }
+  }
+  state.draw()
+  canvas.onmousedown = (e) => {};
+}
+
+/**
+ * 
+ * @param {State} state 
+ * @returns 
+ */
+function hapusTitikPolygon(state){
+  if (state.selectedShape === null || state.selectedPoint === null){
+    return
+  }
+  let newPoints = [];
+  for (let i = 0; i < state.shapes.length; i++){
+    let shape = state.shapes[i]
+    if (shape.name === state.selectedShape.name){
+      for (let point of shape.points){
+        if (point.name !== state.selectedPoint.name){
+            newPoints.push(point)
+        }
+      }
+      state.shapes[i].points = newPoints
+      break
+    }
+  }
+
+  console.log(state)
+  state.clearSelection();
+  state.draw();
+}
+
+function toConvexHull(state) {
+  console.log(state.selectedShape)
+  if(state.selectedShape instanceof Polygon){
+    console.log("mulai convex hull")
+    state.selectedShape.toConvexHull()
+  }
+  console.log("selesai convex hull")
+  state.draw()
+}
+
   
 function main(){
   let state = new State(gl);
   const createLineButton=document.getElementById("line")
   const createRectangleButton=document.getElementById("rectangle")
   const createSquareButton=document.getElementById("square")
+  const createPolygonButton=document.getElementById("polygon")
   createRectangleButton.addEventListener("click",() =>createRectangle(state))
   createLineButton.addEventListener("click",() =>createLine(state))
   createSquareButton.addEventListener("click",() =>createSquare(state))
+  createPolygonButton.addEventListener("click",() => createPolygon(state))
   const moveSquareButton= document.getElementById("movesquare")
   moveSquareButton.addEventListener("click",()=>moveSquare(state))
   const moveLineButton= document.getElementById("moveline")
@@ -725,7 +890,13 @@ function main(){
   geserTitikBawahButton.addEventListener("click", geserTitik.bind(null, state, "down"))
   geserTitikBawahButton.addEventListener("keydown", geserTitikOnKey.bind(null, state))
 
-  
+  const tambahTitikPolygonButton = document.getElementById("tambahTitikPolygonButton")
+  const hapusTitikPolygonButton = document.getElementById("hapusTitikPolygonButton")
+  tambahTitikPolygonButton.addEventListener("click", tambahTitikPolygon.bind(null, state))
+  hapusTitikPolygonButton.addEventListener("click", hapusTitikPolygon.bind(null, state))
+
+  const convexHullPolygon = document.getElementById("convexHullPolygon")
+  convexHullPolygon.addEventListener("click", toConvexHull.bind(null, state))
 }
 
 
