@@ -691,6 +691,17 @@ function hapusTitikPolygon(state){
   state.clearSelection();
   state.draw();
 }
+
+function toConvexHull(state) {
+  console.log(state.selectedShape)
+  if(state.selectedShape instanceof Polygon){
+    console.log("mulai convex hull")
+    state.selectedShape.toConvexHull()
+  }
+  console.log("selesai convex hull")
+  state.draw()
+}
+
   
 function main(){
   let state = new State(gl);
@@ -762,6 +773,9 @@ function main(){
   const hapusTitikPolygonButton = document.getElementById("hapusTitikPolygonButton")
   tambahTitikPolygonButton.addEventListener("click", tambahTitikPolygon.bind(null, state))
   hapusTitikPolygonButton.addEventListener("click", hapusTitikPolygon.bind(null, state))
+
+  const convexHullPolygon = document.getElementById("convexHullPolygon")
+  convexHullPolygon.addEventListener("click", toConvexHull.bind(null, state))
 }
 
 
