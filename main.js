@@ -835,7 +835,7 @@ function handlemouseupLine(e){
       flagLine=false;
     }
     function changeLengthLineHandler(state){
-      const input= document.getElementById('size')
+      const input= document.getElementById('size')/*
       let line=[]
       for (let i=state.shapes.length-1;i>=0;i--){
         if(state.shapes[i].name.slice(0,4)=="Line"){
@@ -845,9 +845,15 @@ function handlemouseupLine(e){
       canvas.onclick=function(e){
         e.preventDefault()
         downLengthLine(state,line,e,input)
+      }*/
+      if(state.selectedShape instanceof Line){
+        let line = state.selectedShape
+        line.dilate(line.points[0], input.value)
       }
+      state.draw()
 
     }
+    /*
     function downLengthLine(state,line,e,input){
       let new_x  = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
@@ -871,7 +877,7 @@ function handlemouseupLine(e){
           state.draw()
           break
       }
-    }
+    }*/
     function mousemoveLineEvent(state,e){
       let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
