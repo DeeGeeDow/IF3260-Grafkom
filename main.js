@@ -1,4 +1,7 @@
 /** @type {HTMLCanvasElement} */
+let idx=-1
+let idxPoint=-1
+let result;
 const canvas = document.getElementById("canvas");
 const gl = check(canvas);
 const vertexShaderText = `precision mediump float; 
@@ -400,6 +403,129 @@ function save(state) {
   const data = { state };
   download(JSON.stringify(data));
 }
+function moveSquare(state){
+  let sq =[]
+  for (let i=state.shapes.length-1;i>=0;i--){
+    if(state.shapes[i].name.slice(0,6)==="Square"){
+      sq.push(state.shapes[i])
+    }  
+  }
+  canvas.onmousedown=function(e){
+    e.preventDefault()
+  handlemousedownSquare(sq,e)
+  }
+  canvas.onmousemove=function(e){
+    e.preventDefault()
+    handlemousemoveSquare(state,sq,e)
+  }
+  canvas.onmouseup=function(e){
+    e.preventDefault()
+    handlemouseupSquare(e)
+  }          
+}
+function handlemousedownSquare(sq,e){
+  let new_x  = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+  let newPoint= new Point(new_x,new_y)
+  shortestDist(sq,newPoint)
+  flagSquare=true
+}
+function handlemousemoveSquare(state,sq,e){
+  let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+    if(flagSquare){
+        let dx = new_x - sq[idx].points[0].x;
+        let dy = new_y - sq[idx].points[0].y;
+        let side = Math.min(Math.abs(dx), Math.abs(dy));
+        if (dx>0){
+          dx=side
+        }
+        else {
+          dx=-side
+        }
+        if(dy>0){
+          dy=side 
+        }else{
+          dy=-side
+        }
+        sq[idx].points[1].x= sq[idx].points[0].x+dx
+        sq[idx].points[2].x= sq[idx].points[0].x+dx
+        sq[idx].points[2].y= sq[idx].points[0].y+dy
+        sq[idx].points[3].y= sq[idx].points[0].y+dy
+        state.draw()
+  }
+
+}
+function handlemouseupSquare(e){
+  e.preventDefault()
+  flagSquare=false
+  idx=-1
+  idxPoint=-1
+}
+
+
+function moveLine(state){
+  let line=[]
+  for (let i=state.shapes.length-1;i>=0;i--){
+    if(state.shapes[i].name.slice(0,4)==="Line"){
+      line.push(state.shapes[i])
+    }  
+  }
+  canvas.onmousedown=function(e){
+    e.preventDefault()
+  handlemousedownLine(line,e)
+  }
+  canvas.onmousemove=function(e){
+    e.preventDefault()
+    handlemousemoveLine(state,line,e)
+  }
+  canvas.onmouseup=function(e){
+    e.preventDefault()
+    handlemouseupLine(e)
+  }          
+
+}
+function shortestDist(shapes,point){
+  let dist =2
+  let shortestx=0
+  let shortesty=0
+  for(let j=shapes.length-1;j>=0;j--){
+    for (let i = shapes[j].points.length-1; i>=0;i--){
+      let dx = shapes[j].points[i].x-point.x
+      let dy =shapes[j].points[i].y-point.y
+      let tmpdist = Math.sqrt(dx * dx + dy * dy)
+      if(tmpdist<dist){
+        dist=tmpdist
+        shortestx=shapes[j].points[i].x
+        shortesty=shapes[j].points[i].y
+        idx=j
+        idxPoint=i
+      }  
+  }
+}
+}
+function handlemousedownLine(line,e){
+  let new_x  = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+  let newPoint= new Point(new_x,new_y)
+  shortestDist(line,newPoint)
+  flagLine=true
+}
+function handlemousemoveLine(state,line,e){
+  let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+    if(flagLine ){
+      line[idx].points[idxPoint].x=new_x
+      line[idx].points[idxPoint].y=new_y
+      state.draw()
+  }
+}
+function handlemouseupLine(e){
+  e.preventDefault()
+  flagLine=false
+  idx=-1
+  idxPoint=-1
+}
   function createSquare(state){
     canvas.onmousedown=function(e){ 
       e.preventDefault()
@@ -429,7 +555,6 @@ function save(state) {
     let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
     if(flagSquare){
       for (let i = state.shapes.length-1 ;i>=0;i--){
-        console.log(state)
         if(state.shapes[i].name.slice(0,6)==="Square"){
           let dx = new_x - state.shapes[i].points[0].x;
           let dy = new_y - state.shapes[i].points[0].y;
@@ -445,7 +570,6 @@ function save(state) {
           }else{
             dy=-side
           }
-          console.log('masuk',dx,dy)
           state.shapes[i].points[1].x= state.shapes[i].points[0].x+dx
           state.shapes[i].points[2].x= state.shapes[i].points[0].x+dx
           state.shapes[i].points[2].y= state.shapes[i].points[0].y+dy
@@ -475,7 +599,6 @@ function save(state) {
       let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
       let line = new Line(gl,[new Point(0,0),new Point(x,y)]);
-      console.log(state);
       state.pushShape(line)
       flagLine=true;
     }
@@ -491,7 +614,6 @@ function save(state) {
           state.shapes[i].points[0].x= new_x
           state.shapes[i].points[0].y= new_y
           state.draw()
-          console.log('tesssline')
           break
           }
         }
@@ -548,11 +670,10 @@ function main(){
   createRectangleButton.addEventListener("click",() =>createRectangle(state))
   createLineButton.addEventListener("click",() =>createLine(state))
   createSquareButton.addEventListener("click",() =>createSquare(state))
-  console.log(state);
-  // let pg = new Polygon(gl,[new Point(0.8,-0.2, new Color(0,0,255))])
-  // pg.newPoint(new Point(-0.8,-0.8, new Color(0,255,0)))
-  // pg.newPoint(new Point(-0.2,-0.8,new Color(255,0,0)))
-  // pg.newPoint(new Point(0.2,-0.2, new Color(0,255,255)))
+  const moveSquareButton= document.getElementById("movesquare")
+  moveSquareButton.addEventListener("click",()=>moveSquare(state))
+  const moveLineButton= document.getElementById("moveline")
+  moveLineButton.addEventListener("click",()=>moveLine(state))
   const savebutton = document.getElementById("save")
   savebutton.addEventListener("click", save.bind(null,state))
   const dilatasiPerbesarButton = document.getElementById("dilatasiPlus")
