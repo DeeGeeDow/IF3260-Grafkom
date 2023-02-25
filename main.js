@@ -268,7 +268,33 @@ function geserTitik(state, direction){
       }    
     }
   } else if (state.selectedShape instanceof Rectangle){
-    console.log("rectangle")
+    if ((isMostUpper && isMostLeft) || (isMostLower && isMostRight)){
+      switch (direction) {
+        case "up":
+        case "left":
+          upLeftRectangle(state);
+          break;
+        case "down":
+        case "right":
+          downRightRectangle(state);
+          break;          
+        default:
+          break;
+      }
+    } else if ((isMostUpper && isMostRight) || (isMostLower && isMostLeft)){
+      switch (direction) {
+        case "up":
+        case "right":
+          upRightRectangle(state);
+          break;
+        case "down":
+        case "left":
+          downLeftRectangle(state);
+          break;          
+        default:
+          break;
+      }    
+    }
   } else if (state.selectedShape instanceof Line){
     state.selectedShape.draw();
   } else if (state.selectedShape instanceof Polygon){
@@ -321,6 +347,24 @@ function geserTitikOnKey(state, e){
   }
 }
 
+function upLeftRectangle(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(-0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(-0.0075,0.0075)
+  state.selectedShape.points = newPoints
+
+}
 function upLeft(state){
   const selectedPoint = state.selectedPoint
   const selectedShape = state.selectedShape
@@ -336,6 +380,25 @@ function upLeft(state){
     newPoints.push(point)
   }
   selectedPoint.add(-0.0075,0.0075)
+  state.selectedShape.points = newPoints
+}
+
+function upRightRectangle(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+  for (let point of selectedShape.points){
+    console.log('masuk')
+    if (point.x === selectedPoint.x){
+      point.add(0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(0.0075,0.0075)
+  // selectedShape.points[1].x=
   state.selectedShape.points = newPoints
 }
 
@@ -356,7 +419,23 @@ function upRight(state){
   selectedPoint.add(0.0075,0.0075)
   state.selectedShape.points = newPoints
 }
+function downLeftRectangle(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
 
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(-0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,-0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(-0.0075,-0.0075)
+  state.selectedShape.points = newPoints
+}
 function downLeft(state){
   const selectedPoint = state.selectedPoint
   const selectedShape = state.selectedShape
@@ -372,6 +451,23 @@ function downLeft(state){
     newPoints.push(point)
   }
   selectedPoint.add(-0.0075,-0.0075)
+  state.selectedShape.points = newPoints
+}
+function downRightRectangle(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(0.0075,0)
+    }
+    if (point.y === selectedPoint.y){
+      point.add(0,-0.0075)
+    }
+    newPoints.push(point)
+  }
+  selectedPoint.add(0.0075,-0.0075)
   state.selectedShape.points = newPoints
 }
 
@@ -730,8 +826,8 @@ function handlemouseupLine(e){
     }
     function mousedownLineEvent(state,e){
       let x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
-      let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
-      let line = new Line(gl,[new Point(0,0),new Point(x,y)]);
+      let y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight; 
+      let line = new Line(gl,[new Point(x,y),new Point(x,y)]);
       state.pushShape(line)
       flagLine=true;
     }
