@@ -834,6 +834,44 @@ function handlemouseupLine(e){
     function mouseupLineEvent(){
       flagLine=false;
     }
+    function changeLengthLineHandler(state){
+      const input= document.getElementById('size')
+      let line=[]
+      for (let i=state.shapes.length-1;i>=0;i--){
+        if(state.shapes[i].name.slice(0,4)=="Line"){
+          line.push(state.shapes[i])
+        }
+      }
+      canvas.onclick=function(e){
+        e.preventDefault()
+        downLengthLine(state,line,e,input)
+      }
+
+    }
+    function downLengthLine(state,line,e,input){
+      let new_x  = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+      let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+      let newPoint= new Point(new_x,new_y)
+      shortestDist(line,newPoint)    
+      for (let i=line.length-1;i>=0;i--){
+          xMiddle = (line[i].points[0].x + line[i].points[1].x) / 2
+          yMiddle = (line[i].points[0].y + line[i].points[1].y) / 2
+          const d1 = Math.sqrt((line[i].points[0].x - xMiddle) ** 2 + (line[i].points[0].y  - yMiddle) ** 2);
+          const d2 = Math.sqrt((line[i].points[1].x - xMiddle) ** 2 + (line[i].points[1].y  - yMiddle) ** 2);
+          const increase = (input.value - d1 - d2) / 2;
+          const theta = Math.atan2(line[i].points[1].y - line[i].points[0].y, line[i].points[1].x - line[i].points[0].x);
+          const x1_baru = line[i].points[0].x - increase * Math.cos(theta);
+          const y1_baru = line[i].points[0].y - increase * Math.sin(theta);
+          const x2_baru = line[i].points[1].x + increase * Math.cos(theta);
+          const y2_baru = line[i].points[1].y + increase * Math.sin(theta);
+          line[i].points[0].x = x1_baru
+          line[i].points[0].y = y1_baru
+          line[i].points[1].x = x2_baru
+          line[i].points[1].y = y2_baru
+          state.draw()
+          break
+      }
+    }
     function mousemoveLineEvent(state,e){
       let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
@@ -1067,9 +1105,12 @@ function main(){
   moveLineButton.addEventListener("click",()=>moveLine(state))
   const savebutton = document.getElementById("save")
   savebutton.addEventListener("click", save.bind(null,state))
+  const changeLengthLineButton= document.getElementById("changeLength")
+  changeLengthLineButton.addEventListener("click",()=>changeLengthLineHandler(state))
+
   const dilatasiPerbesarButton = document.getElementById("dilatasiPlus")
   dilatasiPerbesarButton.addEventListener("click", perbesar.bind(null, state))
-
+  
   const dilatasiPerkecilButton = document.getElementById("dilatasiMinus")
   dilatasiPerkecilButton.addEventListener("click", perkecil.bind(null, state))
 
