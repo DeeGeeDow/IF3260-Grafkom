@@ -843,33 +843,54 @@ function handlemouseupLine(e){
         }
       }
       canvas.onclick=function(e){
-        e.preventDefault()
-        downLengthLine(state,line,e,input)
+        downLengthLine(state,line,input,e)
       }
 
     }
-    function downLengthLine(state,line,e,input){
+    function downLengthLine(state,line,input,e){
       let new_x  = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
       let newPoint= new Point(new_x,new_y)
-      shortestDist(line,newPoint)    
-      for (let i=line.length-1;i>=0;i--){
-          xMiddle = (line[i].points[0].x + line[i].points[1].x) / 2
-          yMiddle = (line[i].points[0].y + line[i].points[1].y) / 2
-          const d1 = Math.sqrt((line[i].points[0].x - xMiddle) ** 2 + (line[i].points[0].y  - yMiddle) ** 2);
-          const d2 = Math.sqrt((line[i].points[1].x - xMiddle) ** 2 + (line[i].points[1].y  - yMiddle) ** 2);
-          const increase = (input.value - d1 - d2) / 2;
-          const theta = Math.atan2(line[i].points[1].y - line[i].points[0].y, line[i].points[1].x - line[i].points[0].x);
-          const x1_baru = line[i].points[0].x - increase * Math.cos(theta);
-          const y1_baru = line[i].points[0].y - increase * Math.sin(theta);
-          const x2_baru = line[i].points[1].x + increase * Math.cos(theta);
-          const y2_baru = line[i].points[1].y + increase * Math.sin(theta);
-          line[i].points[0].x = x1_baru
-          line[i].points[0].y = y1_baru
-          line[i].points[1].x = x2_baru
-          line[i].points[1].y = y2_baru
-          state.draw()
-          break
+      shortestDist(line,newPoint)
+      if(idxPoint==0){
+        xMiddle = (line[idx].points[0].x + line[idx].points[1].x) / 2
+        yMiddle = (line[idx].points[0].y + line[idx].points[1].y) / 2
+        const d1 = Math.sqrt((line[idx].points[0].x - xMiddle) ** 2 + (line[idx].points[0].y  - yMiddle) ** 2);
+        const d2 = Math.sqrt((line[idx].points[1].x - xMiddle) ** 2 + (line[idx].points[1].y  - yMiddle) ** 2);
+        const increase = (input.value - d1 - d2) / 2;
+        const theta = Math.atan2(line[idx].points[1].y - line[idx].points[0].y, line[idx].points[1].x - line[idx].points[0].x);
+        const x1_baru = line[idx].points[0].x - increase * Math.cos(theta);
+        const y1_baru = line[idx].points[0].y - increase * Math.sin(theta);
+        const x2_baru = line[idx].points[1].x + increase * Math.cos(theta);
+        const y2_baru = line[idx].points[1].y + increase * Math.sin(theta);
+        line[idx].points[0].x = x1_baru
+        line[idx].points[0].y = y1_baru
+        line[idx].points[1].x = x2_baru
+        line[idx].points[1].y = y2_baru
+        state.draw()
+        idx=-1
+        idxPoint=-1
+
+      }  
+      if(idxPoint==1){
+        xMiddle = (line[idx].points[1].x + line[idx].points[0].x) / 2
+        yMiddle = (line[idx].points[1].y + line[idx].points[0].y) / 2
+        const d1 = Math.sqrt((line[idx].points[1].x - xMiddle) ** 2 + (line[idx].points[1].y  - yMiddle) ** 2);
+        const d2 = Math.sqrt((line[idx].points[0].x - xMiddle) ** 2 + (line[idx].points[0].y  - yMiddle) ** 2);
+        const increase = (input.value - d1 - d2) / 2;
+        const theta = Math.atan2(line[idx].points[0].y - line[idx].points[1].y, line[idx].points[0].x - line[idx].points[1].x);
+        const x1_baru = line[idx].points[1].x - increase * Math.cos(theta);
+        const y1_baru = line[idx].points[1].y - increase * Math.sin(theta);
+        const x2_baru = line[idx].points[0].x + increase * Math.cos(theta);
+        const y2_baru = line[idx].points[0].y + increase * Math.sin(theta);
+        line[idx].points[1].x = x1_baru
+        line[idx].points[1].y = y1_baru
+        line[idx].points[0].x = x2_baru
+        line[idx].points[0].y = y2_baru
+        state.draw()
+        idx=-1
+        idxPoint=-1
+
       }
     }
     function mousemoveLineEvent(state,e){
