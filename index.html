@@ -36,13 +36,15 @@
             <button class="btn btn-default" id="polygon">Create Polygon</button>
           </div>
           <div class="flex">
-            <h2>Resize Line</h2>
+            <div id="button-container">
+            <h2>Resize Shape</h2>
             <p>Size: <input id="size" type="number" min="0" max="2" step=".01"value="0.1"/></p>
             <button class="btn btn-default" id="changeLength">Change Length Line</button>
           </div>
+          </div>
         </div>
         <div>
-          <h2>Move Shapes</h2>
+          <h2>Resize and Move Shapes with Any Point</h2>
           <div id="button-container">
             <button class="btn btn-default" id="movesquare">Move Square</button>
             <button  class="btn btn-default" id="moveline">Move Line</button>
@@ -120,7 +122,7 @@
           <div id="gesertTitik" class="tool">
             <h3>Load</h3>
             <div id="geserTitikButtonContainer" class="translateButtonContainer">
-              <input accept=".json,application/json" type="file" class="btn btn-default" id="load">Load File</input>
+              <input accept=".json,application/json" type="file" class="btn btn-default" id="load"></input>
             </div>
           </div>
 
