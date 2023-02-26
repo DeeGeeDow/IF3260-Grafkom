@@ -1181,7 +1181,7 @@ function main(){
   
   const loadButton = document.getElementById("load")
   loadButton.addEventListener("change", function(event){
-    event.preventDefault()
+  event.preventDefault()
   const file = event.target.files[0];
   var reader = new FileReader();
   reader.readAsText(file);
@@ -1192,7 +1192,7 @@ function main(){
     for (let shape of parsedData.state.shapes) {
       let points = [];
       for (let point of shape.points) {
-        points.push(new Point(point.x, point.y));
+        points.push(new Point(point.x, point.y,new Color(point.color.red,point.color.green,point.color.blue)));
       }
       shape.points = points;
 
