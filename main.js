@@ -268,35 +268,54 @@ function geserTitik(state, direction){
       }    
     }
   } else if (state.selectedShape instanceof Rectangle){
-    if ((isMostUpper && isMostLeft) || (isMostLower && isMostRight)){
       switch (direction) {
         case "up":
+          upRectangle(state)
+          break;
         case "left":
-          upLeftRectangle(state);
+          leftRectangle(state)
           break;
         case "down":
+          downRectangle(state)
+          break;
         case "right":
-          downRightRectangle(state);
+          RightRectangle(state)
           break;          
         default:
-          break;
-      }
-    } else if ((isMostUpper && isMostRight) || (isMostLower && isMostLeft)){
-      switch (direction) {
-        case "up":
-        case "right":
-          upRightRectangle(state);
-          break;
-        case "down":
-        case "left":
-          downLeftRectangle(state);
-          break;          
-        default:
-          break;
-      }    
+          break; 
     }
   } else if (state.selectedShape instanceof Line){
-    state.selectedShape.draw();
+    const selectedPoint = state.selectedPoint
+    const selectedShape = state.selectedShape
+    let newPoints = []
+
+    for (let point of selectedShape.points){
+      if (point.x === selectedPoint.x && point.y === selectedPoint.y){
+        switch (direction) {
+          case "up":
+            point.add(0,0.0075)
+            selectedPoint.add(0,0.0075)
+            break;
+          case "right":
+            point.add(0.0075,0)
+            selectedPoint.add(0.0075,0)
+            break;
+          case "down":
+            point.add(0,-0.0075)
+            selectedPoint.add(0,-0.0075)
+            break;
+          case "left":
+            point.add(-0.0075,0)
+            selectedPoint.add(-0.0075,0)
+            break;          
+          default:
+            break;
+        }
+      }
+      newPoints.push(point)
+    }
+    state.selectedShape.points = newPoints
+    
   } else if (state.selectedShape instanceof Polygon){
     let newPoints = []
     for (let point of state.selectedShape.points){
@@ -347,21 +366,18 @@ function geserTitikOnKey(state, e){
   }
 }
 
-function upLeftRectangle(state){
+function upRectangle(state){
   const selectedPoint = state.selectedPoint
   const selectedShape = state.selectedShape
   let newPoints = []
 
   for (let point of selectedShape.points){
-    if (point.x === selectedPoint.x){
-      point.add(-0.0075,0)
-    }
     if (point.y === selectedPoint.y){
       point.add(0,0.0075)
     }
     newPoints.push(point)
   }
-  selectedPoint.add(-0.0075,0.0075)
+  selectedPoint.add(0,0.0075)
   state.selectedShape.points = newPoints
 
 }
@@ -383,22 +399,31 @@ function upLeft(state){
   state.selectedShape.points = newPoints
 }
 
-function upRightRectangle(state){
+function RightRectangle(state){
   const selectedPoint = state.selectedPoint
   const selectedShape = state.selectedShape
   let newPoints = []
   for (let point of selectedShape.points){
-    console.log('masuk')
     if (point.x === selectedPoint.x){
       point.add(0.0075,0)
     }
-    if (point.y === selectedPoint.y){
-      point.add(0,0.0075)
+    newPoints.push(point)
+  }
+  selectedPoint.add(0.0075,0)
+  state.selectedShape.points = newPoints
+}
+function leftRectangle(state){
+  const selectedPoint = state.selectedPoint
+  const selectedShape = state.selectedShape
+  let newPoints = []
+
+  for (let point of selectedShape.points){
+    if (point.x === selectedPoint.x){
+      point.add(-0.0075,0)
     }
     newPoints.push(point)
   }
-  selectedPoint.add(0.0075,0.0075)
-  // selectedShape.points[1].x=
+  selectedPoint.add(-0.0075,0)
   state.selectedShape.points = newPoints
 }
 
@@ -419,23 +444,6 @@ function upRight(state){
   selectedPoint.add(0.0075,0.0075)
   state.selectedShape.points = newPoints
 }
-function downLeftRectangle(state){
-  const selectedPoint = state.selectedPoint
-  const selectedShape = state.selectedShape
-  let newPoints = []
-
-  for (let point of selectedShape.points){
-    if (point.x === selectedPoint.x){
-      point.add(-0.0075,0)
-    }
-    if (point.y === selectedPoint.y){
-      point.add(0,-0.0075)
-    }
-    newPoints.push(point)
-  }
-  selectedPoint.add(-0.0075,-0.0075)
-  state.selectedShape.points = newPoints
-}
 function downLeft(state){
   const selectedPoint = state.selectedPoint
   const selectedShape = state.selectedShape
@@ -453,21 +461,18 @@ function downLeft(state){
   selectedPoint.add(-0.0075,-0.0075)
   state.selectedShape.points = newPoints
 }
-function downRightRectangle(state){
+function downRectangle(state){
   const selectedPoint = state.selectedPoint
   const selectedShape = state.selectedShape
   let newPoints = []
 
   for (let point of selectedShape.points){
-    if (point.x === selectedPoint.x){
-      point.add(0.0075,0)
-    }
     if (point.y === selectedPoint.y){
       point.add(0,-0.0075)
     }
     newPoints.push(point)
   }
-  selectedPoint.add(0.0075,-0.0075)
+  selectedPoint.add(0,-0.0075)
   state.selectedShape.points = newPoints
 }
 
