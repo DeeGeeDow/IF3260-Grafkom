@@ -500,6 +500,41 @@ function save(state) {
   const data = { state };
   download(JSON.stringify(data));
 }
+function load(state){
+  canvas.onchange=function(e){
+    loadHandler(state,e)
+  }
+  }
+function loadHandler(state,e){
+  const file = e.target.files[0];
+  console.log('pppppp')
+  var reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function (e) {
+    var content = e.target.result;
+    var parsedData = JSON.parse(content);
+    for (let shape of parsedData.state.shapes) {
+      let points = [];
+      for (let point of shape.points) {
+        points.push(new Point(point.x, point.y));
+      }
+      shape.points = points;
+
+      if (shape.name.slice(0,4) == "Line") {
+        state.shapes.push(new Line(shape.gl, shape.points));
+      } else if (shape.name == "Rectangle") {
+        state.shapes.push(new Rectangle(shape.gl,[shape.points[1], shape.points[2]]));
+      } else if (shape.name.slice(0,6) == "Square") {
+        state.shapes.push(new Square(shape.gl, [shape.points[0], shape.points[1]]));
+      }
+      else if (shape.name.slice(0,9) == "Rectangle") {
+        state.shapes.push(new Rectangle(shape.gl, [shape.points[0], shape.points[1]]));
+      }
+      state.draw();
+
+    }
+}
+}
 function moveRectangle(state){
   let rec =[]
   for (let i=state.shapes.length-1;i>=0;i--){
@@ -697,15 +732,12 @@ function moveLine(state){
     }  
   }
   canvas.onmousedown=function(e){
-    e.preventDefault()
   handlemousedownLine(line,e)
   }
   canvas.onmousemove=function(e){
-    e.preventDefault()
     handlemousemoveLine(state,line,e)
   }
   canvas.onmouseup=function(e){
-    e.preventDefault()
     handlemouseupLine(e)
   }          
 
@@ -1126,6 +1158,10 @@ function main(){
   moveLineButton.addEventListener("click",()=>moveLine(state))
   const savebutton = document.getElementById("save")
   savebutton.addEventListener("click", save.bind(null,state))
+  
+  const loadButton = document.getElementById("load")
+  loadButton.addEventListener("change", ()=>load(state))
+
   const changeLengthLineButton= document.getElementById("changeLength")
   changeLengthLineButton.addEventListener("click",()=>changeLengthLineHandler(state))
 

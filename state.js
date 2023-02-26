@@ -43,7 +43,6 @@ class State {
      * @param {Shape} shape 
      */
     pushShape(shape){
-        console.log('masukcok')
         this.shapes.push(shape);
     }
 
