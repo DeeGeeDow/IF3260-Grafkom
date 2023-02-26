@@ -867,7 +867,7 @@ function handlemouseupLine(e){
       flagLine=false;
     }
     function changeLengthLineHandler(state){
-      const input= document.getElementById('size')
+      const input= document.getElementById('size')/*
       let line=[]
       for (let i=state.shapes.length-1;i>=0;i--){
         if(state.shapes[i].name.slice(0,4)=="Line"){
@@ -875,11 +875,18 @@ function handlemouseupLine(e){
         }
       }
       canvas.onclick=function(e){
-        downLengthLine(state,line,input,e)
+        e.preventDefault()
+        downLengthLine(state,line,e,input)
+      }*/
+      if(state.selectedShape instanceof Line){
+        let line = state.selectedShape
+        line.dilate(line.points[0], input.value)
       }
+      state.draw()
 
     }
-    function downLengthLine(state,line,input,e){
+    /*
+    function downLengthLine(state,line,e,input){
       let new_x  = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
       let newPoint= new Point(new_x,new_y)
@@ -924,7 +931,7 @@ function handlemouseupLine(e){
         idxPoint=-1
 
       }
-    }
+    }*/
     function mousemoveLineEvent(state,e){
       let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
       let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
@@ -1000,7 +1007,52 @@ function createPolygon(state) {
     rightClickPolygonEvent(state,e)
   }
 }
+function movePolygon(state){
+  let polygon =[]
+  for (let shape of state.shapes){
+    if(shape instanceof Polygon){
+      polygon.push(shape)
+    }  
+  }
 
+  canvas.onmousedown=function(e){
+    e.preventDefault()
+    handlemousedownPolygon(polygon,e)
+  }
+  canvas.onmousemove=function(e){
+    e.preventDefault()
+    handlemousemovePolygon(state,polygon,e)
+  }
+  canvas.onmouseup=function(e){
+    e.preventDefault()
+    handlemouseupPolygon(e)
+  }          
+}
+
+function handlemousedownPolygon(polygon,e){
+  let new_x  = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;  
+  let newPoint= new Point(new_x,new_y)
+  shortestDist(polygon,newPoint)
+  flagPolygon=true
+}
+
+function handlemousemovePolygon(state,polygon,e){
+  let new_x = (2 * (e.clientX - canvas.offsetLeft)) / canvas.clientWidth - 1;
+  let new_y = 1 - (2 * (e.clientY - canvas.offsetTop)) / canvas.clientHeight;
+    if(flagPolygon ){
+      polygon[idx].points[idxPoint].x=new_x
+      polygon[idx].points[idxPoint].y=new_y
+      state.draw()
+  }
+}
+
+function handlemouseupPolygon(e){
+  e.preventDefault()
+  flagPolygon=false
+  idx=-1
+  idxPoint=-1
+}
 /**
  * 
  * @param {State} state 
@@ -1156,6 +1208,8 @@ function main(){
   moveRectangleButton.addEventListener("click",()=>moveRectangle(state))
   const moveLineButton= document.getElementById("moveline")
   moveLineButton.addEventListener("click",()=>moveLine(state))
+  const movePolygonButton= document.getElementById("movepolygon")
+  movePolygonButton.addEventListener("click",()=>movePolygon(state))
   const savebutton = document.getElementById("save")
   savebutton.addEventListener("click", save.bind(null,state))
   
