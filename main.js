@@ -850,7 +850,7 @@ function handlemouseupLine(e){
       }*/
       if(state.selectedShape instanceof Line){
         let line = state.selectedShape
-        line.dilate(line.points[0], input.value)
+        line.dilate(line.getCentroid(), input.value)
       }
       state.draw()
 
